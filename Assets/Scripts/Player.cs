@@ -15,7 +15,7 @@ public class Player : Character {
     void Init()
     {
         speed = 5;
-        SetPosition(new Vector2(0.1f, 0.5f));
+        SetPosition(new Vector2(0.25f, 0.5f));
     }
 
     // Update is called once per frame

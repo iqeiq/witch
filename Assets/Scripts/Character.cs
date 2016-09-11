@@ -17,9 +17,9 @@ public abstract class Character : MonoBehaviour {
     {
         var sr = GetComponent<SpriteRenderer>();
         size = sr.bounds.size;
-
-        min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
-        max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
+        
+        min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0.1f));
+        max = Camera.main.ViewportToWorldPoint(new Vector2(1, 0.9f));
         min += size / 2;
         max -= size / 2;
     }
