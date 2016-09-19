@@ -4,18 +4,10 @@ using System.Collections;
 
 public class Player : Character {
 
-    // Use this for initialization
-    new void Start ()
-    {
-        base.Start();
 
-        Init();
-    }
-
-    void Init()
+    override protected void Init()
     {
-        speed = 5;
-        SetPosition(new Vector2(0.25f, 0.5f));
+        SetPosition(0.25f, 0.5f);
     }
 
     // Update is called once per frame
@@ -25,6 +17,12 @@ public class Player : Character {
 
         var vy = Input.GetAxis("Vertical");
         Move(new Vector2(0, vy));
+
+        //var fire = Input.GetButtonDown("Fire");
+        //var c1 = Input.GetButtonDown("chant A");
+        //var c2 = Input.GetButtonDown("chant B");
+        //var c3 = Input.GetButtonDown("chant C");
+
     }
 
 }

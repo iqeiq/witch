@@ -22,7 +22,7 @@ public class Magic : MonoBehaviour {
 	void Update () {
 
         theta = (theta > 360 ? theta - 360 : theta) + speed;
-
+        
         var pos = transform.position;
         pos.x = dist * Mathf.Sin(theta * Mathf.Deg2Rad);
         transform.position = pos;

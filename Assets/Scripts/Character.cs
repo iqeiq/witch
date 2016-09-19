@@ -7,23 +7,29 @@ public abstract class Character : MonoBehaviour {
     public float speed = 5;
     
     protected Vector2 size;
+    protected SpriteRenderer render;
 
     Vector2 min;
     Vector2 max;
 
 
     // Use this for initialization
-    protected void Start ()
+    void Start ()
     {
-        var sr = GetComponent<SpriteRenderer>();
-        size = sr.bounds.size;
+        render = GetComponent<SpriteRenderer>();
+        size = render.bounds.size;
         
         min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0.1f));
         max = Camera.main.ViewportToWorldPoint(new Vector2(1, 0.9f));
         min += size / 2;
         max -= size / 2;
+
+        Init();
     }
 
+    abstract protected void Init();
+
+	
     // Update is called once per frame
     protected void Update ()
     {
@@ -31,9 +37,14 @@ public abstract class Character : MonoBehaviour {
 
 	}
 
-    protected void SetPosition(Vector2 pos)
+    public void SetPosition(Vector2 pos)
     {
         transform.position = Camera.main.ViewportToWorldPoint(pos);
+    }
+
+    public void SetPosition(float rx, float ry)
+    {
+        SetPosition(new Vector2(rx, ry));
     }
     
     protected void Move(Vector2 dir)
