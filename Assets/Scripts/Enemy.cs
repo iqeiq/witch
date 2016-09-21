@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-using System;
 
-
-public class Enemy : Character
+public abstract class Enemy : Character
 {
 
     public enum State
@@ -17,43 +15,41 @@ public class Enemy : Character
         DEAD = 0xDEAD
     }
 
-    public const int maxhp = 2;
-    int hp;
-
+    protected int hp;
+    protected float prev_y, base_y;
+    
     public State state { get; private set; }
+    
 
-    float th1 = 0f, th2 = 0f;
-
-
-    override protected void Init()
+    protected sealed override void Init()
     {
         transform.localScale = new Vector2(0f, 0f);
         transform.localRotation = Quaternion.Euler(0, 0, 180);
-        hp = maxhp;
+
+        InitEnemy();
 
         state = State.READY;
     }
+
+    protected virtual void InitEnemy() { }
 
 
     void Action()
     {
         if (state != State.ALIVE) return;
+            
+        ActionEnemy();
 
-        th1 = (th1 > 360 ? th1 - 360 : th1) + 1;
-        th2 = (th2 > 360 ? th2 - 360 : th2) + 1.1f;
-
-        var pos = transform.position;
-        pos.y = 0.8f * Mathf.Sin(th1 * Mathf.Deg2Rad) 
-            + 0.4f * Mathf.Sin(th2 * 10 * Mathf.Deg2Rad);
-        transform.position = pos;
-
-
-        if (Input.GetButtonDown("Fire"))
+        if (hp < 0)
+        {
             StartCoroutine("Disappear");
-
+        }
     }
 
-    void alphaUpdate(float a)
+    protected virtual void ActionEnemy() { }
+
+
+    protected void alphaUpdate(float a)
     {
         var c = render.color;
         render.color = new Color(c.r, c.b, c.g, a);
@@ -94,9 +90,40 @@ public class Enemy : Character
 
         yield return new WaitForSeconds(sec);
 
+        base_y = prev_y = transform.position.y;
         state = State.ALIVE;
-        Debug.Log("alive");
+        OnAppear();
+
+        yield return new WaitForSeconds(UnityEngine.Random.value / 2);
+        Shake1();
+        //Debug.Log("alive");
     }
+
+    void Shake1()
+    {
+        float sec = 1.5f;
+        iTween.RotateTo(gameObject, iTween.Hash(
+            "z", 5,
+            "time", sec,
+            "islocal", true,
+            "easetype", iTween.EaseType.easeInOutQuad,
+            "oncomplete", "Shake2"
+        ));
+    }
+    void Shake2()
+    {
+        float sec = 1.5f;
+        iTween.RotateTo(gameObject, iTween.Hash(
+            "z", -5,
+            "time", sec,
+            "islocal", true,
+            "easetype", iTween.EaseType.easeInOutQuad,
+            "oncomplete", "Shake1"
+        ));
+    }
+
+    protected virtual void OnAppear() { }
+
 
     IEnumerator Disappear()
     {
@@ -107,10 +134,10 @@ public class Enemy : Character
         var sec = 1.5f;
 
         iTween.RotateTo(gameObject, iTween.Hash(
-            "z", 180,
+            "y", 180,
             "time", sec,
             "islocal", true,
-            "easetype", iTween.EaseType.easeInOutQuad
+            "easetype", iTween.EaseType.easeOutQuad
         ));
 
         iTween.ScaleTo(gameObject, iTween.Hash(
@@ -119,7 +146,7 @@ public class Enemy : Character
             "z", 1f,
             "time", sec,
             "islocal", true,
-            "easetype", iTween.EaseType.easeInOutQuad
+            "easetype", iTween.EaseType.easeOutQuad
         ));
 
         iTween.ValueTo(render.gameObject, iTween.Hash(
@@ -128,14 +155,16 @@ public class Enemy : Character
             "time", sec,
             "islocal", true,
             "onupdate", "alphaUpdate",
-            "easetype", iTween.EaseType.easeInOutQuad
+            "easetype", iTween.EaseType.easeOutQuad
         ));
 
         yield return new WaitForSeconds(sec);
 
         state = State.DEAD;
-        SetPosition(1.5f, -0.5f);
-        Debug.Log("dead");
+        SetPosition(1.5f, 1.5f);
+        Destroy(gameObject);
+        //Debug.Log("dead");
+
     }
 
 

@@ -55,7 +55,7 @@ public abstract class Character : MonoBehaviour {
 
         pos.x = Mathf.Clamp(pos.x, min.x, max.x);
         pos.y = Mathf.Clamp(pos.y, min.y, max.y);
-
+        
         transform.position = pos;
     }
 

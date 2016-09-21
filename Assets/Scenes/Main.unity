@@ -174,8 +174,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 519863463}
   - 212: {fileID: 519863462}
+  - 114: {fileID: 519863464}
   m_Layer: 0
-  m_Name: enemy3
+  m_Name: bat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -227,6 +228,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
+--- !u!114 &519863464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 519863461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9363fcca3c9cb2d479c7151cc0788c60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
 --- !u!1001 &792726183
 Prefab:
   m_ObjectHideFlags: 0
@@ -468,7 +481,7 @@ GameObject:
   - 212: {fileID: 1351844978}
   - 114: {fileID: 1351844980}
   m_Layer: 0
-  m_Name: enemy
+  m_Name: pumpkin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -528,7 +541,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1351844977}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 115c71abebf4e9141aa710c2026fb918, type: 3}
+  m_Script: {fileID: 11500000, guid: 03381dea259d85849a0c05d9a5d773a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
@@ -541,8 +554,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 1571031878}
   - 212: {fileID: 1571031877}
+  - 114: {fileID: 1571031879}
   m_Layer: 0
-  m_Name: enemy2
+  m_Name: ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -594,6 +608,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
+--- !u!114 &1571031879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1571031876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 489645d02c6177e4f8148f3404224ecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
 --- !u!1 &1687063060
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,7 +729,7 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
+  m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
