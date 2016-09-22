@@ -4,6 +4,7 @@ using System.Collections;
 
 public class Player : Character {
 
+    public GameObject magic;
 
     override protected void Init()
     {
@@ -18,10 +19,16 @@ public class Player : Character {
         var vy = Input.GetAxis("Vertical");
         Move(new Vector2(0, vy));
 
-        //var fire = Input.GetButtonDown("Fire");
+        var fire = Input.GetButtonDown("Fire");
         //var c1 = Input.GetButtonDown("chant A");
         //var c2 = Input.GetButtonDown("chant B");
         //var c3 = Input.GetButtonDown("chant C");
+
+        if (fire)
+        {
+            var pos = transform.position + new Vector3(size.x / 2, 0);
+            Instantiate(magic, pos, Quaternion.identity);
+        }
 
     }
 

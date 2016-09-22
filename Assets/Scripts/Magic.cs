@@ -3,29 +3,60 @@ using System.Collections;
 
 public class Magic : MonoBehaviour {
 
-    float theta = 0.0f;
     public float speed = 5.0f;
-    float dist = 1.0f;
+    public float damage = 2.0f;
 
-	// Use this for initialization
-	void Start () {
+    ParticleSystem ps = null;
 
-        var pos = new Vector2(0.5f, 0.5f);
-        transform.position = Camera.main.ViewportToWorldPoint(pos);
+    float max_x;
 
-        var max = Camera.main.ViewportToWorldPoint(new Vector2(0.2f, 0.5f));
-        dist = max.x - transform.position.x;
+    // Use this for initialization
+    void Start () {
+
+        ps = GetComponent<ParticleSystem>();
+
+        //var pos = new Vector2(0.5f, 0.5f);
+        //transform.position = Camera.main.ViewportToWorldPoint(pos);
+
+        max_x = Camera.main.ViewportToWorldPoint(new Vector2(1.0f, 0.5f)).x;
+
+        //StartCoroutine("Logger");
 
     }
-	
-	// Update is called once per frame
-	void Update () {
 
-        theta = (theta > 360 ? theta - 360 : theta) + speed;
-        
-        var pos = transform.position;
-        pos.x = dist * Mathf.Sin(theta * Mathf.Deg2Rad);
-        transform.position = pos;
+    IEnumerator Logger()
+    {
+        while (true)
+        {
+            Debug.LogFormat("particle: {0}", ps.particleCount);
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
 
-	}
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag != "Enemy")
+        {
+            Debug.LogAssertion("n?");
+            return;
+        }
+        Debug.LogFormat("hit {0}", other);
+    }
+
+    // Update is called once per frame
+    void FixedUpdate () {
+
+        var dir = new Vector2(1f , 0f);
+        GetComponent<Rigidbody2D>().AddForce(dir * speed);
+
+        if (transform.position.x > max_x && !ps.isStopped)
+        {
+            ps.Stop();
+        }
+        if(ps.isStopped && ps.particleCount < 1)
+        {
+            Destroy(gameObject);
+        }
+
+    }
 }

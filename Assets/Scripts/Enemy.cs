@@ -15,8 +15,12 @@ public abstract class Enemy : Character
         DEAD = 0xDEAD
     }
 
-    protected int hp;
+    [SerializeField]
+    protected float hp;
+
     protected float prev_y, base_y;
+
+    const float scale = 0.75f;
     
     public State state { get; private set; }
     
@@ -40,7 +44,7 @@ public abstract class Enemy : Character
             
         ActionEnemy();
 
-        if (hp < 0)
+        if (!(hp > 0))
         {
             StartCoroutine("Disappear");
         }
@@ -70,8 +74,8 @@ public abstract class Enemy : Character
         ));
 
         iTween.ScaleTo(gameObject, iTween.Hash(
-            "x", 0.75f,
-            "y", 0.75f,
+            "x", scale,
+            "y", scale,
             "z", 1f,
             "time", sec,
             "islocal", true,
@@ -162,9 +166,22 @@ public abstract class Enemy : Character
 
         state = State.DEAD;
         SetPosition(1.5f, 1.5f);
+        var gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gm.score += 100;
+
         Destroy(gameObject);
         //Debug.Log("dead");
 
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.tag != "Magic")
+        {
+            Debug.LogAssertion("n?");
+            return;
+        }
+        hp -= other.GetComponent<Magic>().damage;
     }
 
 

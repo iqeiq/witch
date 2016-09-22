@@ -38,7 +38,7 @@ public class Ghost : Enemy
 
     IEnumerator ShiftAppear()
     {
-        float disappear_sec = 0.2f;
+        float disappear_sec = 1f;
         float anim_sec = 2.0f;
 
         yield return new WaitForSeconds(disappear_sec);
