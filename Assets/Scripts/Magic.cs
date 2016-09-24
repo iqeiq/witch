@@ -7,21 +7,16 @@ public class Magic : MonoBehaviour {
     public float damage = 2.0f;
 
     ParticleSystem ps = null;
+    CircleCollider2D coll = null;
 
     float max_x;
 
     // Use this for initialization
     void Start () {
-
         ps = GetComponent<ParticleSystem>();
-
-        //var pos = new Vector2(0.5f, 0.5f);
-        //transform.position = Camera.main.ViewportToWorldPoint(pos);
-
+        coll = GetComponent<CircleCollider2D>();
         max_x = Camera.main.ViewportToWorldPoint(new Vector2(1.0f, 0.5f)).x;
-
         //StartCoroutine("Logger");
-
     }
 
     IEnumerator Logger()
@@ -35,12 +30,18 @@ public class Magic : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag != "Enemy")
-        {
-            Debug.LogAssertion("n?");
-            return;
-        }
+        Debug.Assert(other.tag == "Enemy");
         Debug.LogFormat("hit {0}", other);
+
+        Stop();
+    }
+
+    void Stop()
+    {
+        coll.enabled = false;
+        speed = 0;
+        GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
+        ps.Stop();
     }
 
     // Update is called once per frame
@@ -51,7 +52,7 @@ public class Magic : MonoBehaviour {
 
         if (transform.position.x > max_x && !ps.isStopped)
         {
-            ps.Stop();
+            Stop();
         }
         if(ps.isStopped && ps.particleCount < 1)
         {

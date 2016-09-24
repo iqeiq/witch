@@ -6,12 +6,11 @@ public class Ghost : Enemy
 {
 
     public const int maxhp = 3;
-    bool appear;
-
+    
     protected override void InitEnemy()
     {
         hp = maxhp;
-        appear = true;
+        coll.enabled = true;
     }
 
 
@@ -20,10 +19,8 @@ public class Ghost : Enemy
         float appear_sec = 1f;
         float anim_sec = 2.0f;
 
-        appear = true;
         yield return new WaitForSeconds(appear_sec);
-        appear = false;
-
+        
         iTween.ValueTo(render.gameObject, iTween.Hash(
             "from", 1f,
             "to", 0.3f,
@@ -32,7 +29,10 @@ public class Ghost : Enemy
             "onupdate", "alphaUpdate",
             "easetype", iTween.EaseType.easeInOutQuad
         ));
-        yield return new WaitForSeconds(anim_sec);
+        yield return new WaitForSeconds(anim_sec / 2);
+        coll.enabled = false;
+        yield return new WaitForSeconds(anim_sec / 2);
+
         StartCoroutine("ShiftAppear");
     }
 
@@ -51,7 +51,10 @@ public class Ghost : Enemy
             "onupdate", "alphaUpdate",
             "easetype", iTween.EaseType.easeInOutQuad
         ));
-        yield return new WaitForSeconds(anim_sec);
+        yield return new WaitForSeconds(anim_sec / 2);
+        coll.enabled = true;
+        yield return new WaitForSeconds(anim_sec / 2);
+
         StartCoroutine("ShiftDisappear");
     }
 

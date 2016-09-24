@@ -23,12 +23,15 @@ public abstract class Enemy : Character
     const float scale = 0.75f;
     
     public State state { get; private set; }
-    
+
+    protected CircleCollider2D coll = null;
 
     protected sealed override void Init()
     {
         transform.localScale = new Vector2(0f, 0f);
         transform.localRotation = Quaternion.Euler(0, 0, 180);
+        coll = GetComponent<CircleCollider2D>();
+        coll.enabled = false;
 
         InitEnemy();
 
@@ -40,7 +43,7 @@ public abstract class Enemy : Character
 
     void Action()
     {
-        if (state != State.ALIVE) return;
+        Debug.Assert(state == State.ALIVE);
             
         ActionEnemy();
 
@@ -61,7 +64,7 @@ public abstract class Enemy : Character
 
     IEnumerator Appear()
     {
-        if (state != State.READY) yield break;
+        Debug.Assert(state == State.READY);
         state = State.APPEAR;
 
         var sec = 1f;
@@ -96,6 +99,7 @@ public abstract class Enemy : Character
 
         base_y = prev_y = transform.position.y;
         state = State.ALIVE;
+        coll.enabled = true;
         OnAppear();
 
         yield return new WaitForSeconds(UnityEngine.Random.value / 2);
@@ -131,9 +135,9 @@ public abstract class Enemy : Character
 
     IEnumerator Disappear()
     {
-        if (state != State.ALIVE) yield break;
+        Debug.Assert(state == State.ALIVE);
         state = State.DISAPPEAR;
-
+        coll.enabled = false;
 
         var sec = 1.5f;
 
@@ -169,18 +173,14 @@ public abstract class Enemy : Character
         var gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         gm.score += 100;
 
-        Destroy(gameObject);
+        DestroyImmediate(gameObject);
         //Debug.Log("dead");
 
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag != "Magic")
-        {
-            Debug.LogAssertion("n?");
-            return;
-        }
+        Debug.Assert(other.tag == "Magic");
         hp -= other.GetComponent<Magic>().damage;
     }
 
