@@ -1,30 +1,71 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using UniRx;
+using UniRx.Triggers;
+using System;
 using System.Collections;
 
 
-public class TitleManager : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    if(Input.GetButtonDown("Submit") || Input.GetButtonDown("Fire"))
-        {
-            SceneManager.LoadScene("Main");
-        }
-	}
+public class TitleManager : MonoBehaviour
+{
 
-    void OnGUI()
-    {
-        // TODO:
-        if (GUI.Button(new Rect(10, 10, 50, 20), "START"))
-        {
-            SceneManager.LoadScene("Main");
-        }
+    [SerializeField]
+    private Button start;
+
+    [SerializeField]
+    private Button end;
+
+    // Use this for initialization
+    void Start () {
+        StartCoroutine("FadeIn");
     }
+
+    void Init()
+    {
+        start.onClick.AsObservable().Take(1).Subscribe(_ => {
+            StartCoroutine("FadeOut");
+        });
+
+        end.onClick.AsObservable().Merge(
+            this.UpdateAsObservable().Where(_ =>
+                Input.GetButtonDown("Menu")
+            )
+        ).Take(1).Subscribe(_ => {
+            Application.Quit();
+        });
+    }
+
+    IEnumerator FadeIn()
+    {
+        var fi = GetComponentInChildren<FadeImage>();
+        var sec = 0.5f;
+        var wait = 8 / 1000f;
+        var div = sec / wait;
+        for (var i = 0; i < div; ++i)
+        {
+            fi.Range = 1f - i / div;
+            yield return new WaitForSeconds(wait);
+        }
+        fi.Range = 0f;
+        Init();
+    }
+
+    IEnumerator FadeOut()
+    {
+        Debug.Log("Title -> Main");
+        var fi = GetComponentInChildren<FadeImage>();
+        var sec = 0.2f;
+        var wait = 8 / 1000f;
+        var div = sec / wait;
+        for (var i = 0; i < div; ++i)
+        {
+            fi.Range = i / div;
+            yield return new WaitForSeconds(wait);
+        }
+        fi.Range = 1f;
+        SceneManager.LoadScene("Main");
+    }
+
 }

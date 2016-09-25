@@ -7,6 +7,7 @@ public class Magic : MonoBehaviour {
     public float damage = 2.0f;
 
     ParticleSystem ps = null;
+    Rigidbody2D rig = null;
     CircleCollider2D coll = null;
 
     float max_x;
@@ -14,6 +15,7 @@ public class Magic : MonoBehaviour {
     // Use this for initialization
     void Start () {
         ps = GetComponent<ParticleSystem>();
+        rig = GetComponent<Rigidbody2D>();
         coll = GetComponent<CircleCollider2D>();
         max_x = Camera.main.ViewportToWorldPoint(new Vector2(1.0f, 0.5f)).x;
         //StartCoroutine("Logger");
@@ -31,8 +33,7 @@ public class Magic : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Assert(other.tag == "Enemy");
-        Debug.LogFormat("hit {0}", other);
-
+        //Debug.LogFormat("hit {0}", other);
         Stop();
     }
 
@@ -48,7 +49,7 @@ public class Magic : MonoBehaviour {
     void FixedUpdate () {
 
         var dir = new Vector2(1f , 0f);
-        GetComponent<Rigidbody2D>().AddForce(dir * speed);
+        rig.AddForce(dir * speed);
 
         if (transform.position.x > max_x && !ps.isStopped)
         {
