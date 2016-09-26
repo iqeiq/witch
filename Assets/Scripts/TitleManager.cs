@@ -5,7 +5,7 @@ using UniRx;
 using UniRx.Triggers;
 using System;
 using System.Collections;
-
+using Util;
 
 
 public class TitleManager : MonoBehaviour
@@ -28,13 +28,10 @@ public class TitleManager : MonoBehaviour
             StartCoroutine("FadeOut");
         });
 
-        end.onClick.AsObservable().Merge(
-            this.UpdateAsObservable().Where(_ =>
-                Input.GetButtonDown("Menu")
-            )
-        ).Take(1).Subscribe(_ => {
-            Application.Quit();
-        });
+        end.onClick.AsObservable()
+            .Merge(this.InputAsObservable("Menu")).Take(1).Subscribe(_ => {
+                Application.Quit();
+            });
     }
 
     IEnumerator FadeIn()

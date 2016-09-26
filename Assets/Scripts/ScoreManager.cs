@@ -24,12 +24,12 @@ public class ScoreManager : MonoBehaviour
         return "B";
     }
 
-    // Use this for initialization
-    void Awake () {
+    void Awake ()
+    {
         var gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-        var score = gm.score;
-        scoreTextRef.GetComponent<Text>().text = string.Format("{0:D8}", score);
-        rankTextRef.GetComponent<Text>().text = GetRank(score);
+
+        scoreTextRef.GetComponent<Text>().text = string.Format("{0:D8}", gm.score);
+        rankTextRef.GetComponent<Text>().text = GetRank(gm.score);
 
         button.onClick.AsObservable().Subscribe(_ => {
             gm.StartFadeOut();

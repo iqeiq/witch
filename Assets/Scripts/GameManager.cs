@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UniRx;
 using UniRx.Triggers;
 using System.Collections;
+using Util;
 
 
 public class GameManager : MonoBehaviour {
@@ -34,9 +35,7 @@ public class GameManager : MonoBehaviour {
 
     void Init()
     {
-        this.UpdateAsObservable().Where(_ =>
-            Input.GetButtonDown("Menu") && !isClear
-        ).Take(1).Subscribe(_ => {
+        this.InputAsObservable("Menu").Where(_ => !isClear).Take(1).Subscribe(_ => {
             StartFadeOut();
         });
     }
