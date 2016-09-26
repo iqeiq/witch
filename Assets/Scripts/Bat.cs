@@ -24,7 +24,5 @@ public class Bat : Enemy
             + base_y;
 
         Move(new Vector2(0, y - prev_y));
-
-        prev_y = transform.position.y;
     }
 }

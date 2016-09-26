@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using UniRx;
 
 
 public class ScoreManager : MonoBehaviour
 {
-    public GameObject scoreTextRef;
-    public GameObject rankTextRef;
-    public Button button;
+    [SerializeField]
+    private GameObject scoreTextRef;
+
+    [SerializeField]
+    private GameObject rankTextRef;
+
+    [SerializeField]
+    private Button button;
 
 
     string GetRank(int score)
@@ -24,7 +28,7 @@ public class ScoreManager : MonoBehaviour
     void Awake () {
         var gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         var score = gm.score;
-        scoreTextRef.GetComponent<Text>().text = System.String.Format("{0:D8}", score);
+        scoreTextRef.GetComponent<Text>().text = string.Format("{0:D8}", score);
         rankTextRef.GetComponent<Text>().text = GetRank(score);
 
         button.onClick.AsObservable().Subscribe(_ => {
@@ -33,8 +37,4 @@ public class ScoreManager : MonoBehaviour
         
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

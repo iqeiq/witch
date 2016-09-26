@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+
 
 public class Magic : MonoBehaviour {
 
@@ -18,16 +18,6 @@ public class Magic : MonoBehaviour {
         rig = GetComponent<Rigidbody2D>();
         coll = GetComponent<CircleCollider2D>();
         max_x = Camera.main.ViewportToWorldPoint(new Vector2(1.0f, 0.5f)).x;
-        //StartCoroutine("Logger");
-    }
-
-    IEnumerator Logger()
-    {
-        while (true)
-        {
-            Debug.LogFormat("particle: {0}", ps.particleCount);
-            yield return new WaitForSeconds(0.5f);
-        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

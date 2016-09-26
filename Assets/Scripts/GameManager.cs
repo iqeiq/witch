@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using UniRx;
+using UniRx.Triggers;
 using System.Collections;
 
 
@@ -10,27 +11,34 @@ public class GameManager : MonoBehaviour {
     public int score = 0;
     public int startStage = 1;
     public int maxStage = 1;
-    public GameObject wavePrefab;
-    public GameObject waveTextRef;
+
+    [SerializeField]
+    private GameObject wavePrefab;
+
+    [SerializeField]
+    private GameObject waveTextRef;
+
     Text waveText;
     
     Wave wave = null;
     bool isClear = false;
-    bool isFadeout = false;
-
+    
 	// Use this for initialization
 	void Start () {
         score = 0;
         waveText = waveTextRef.GetComponent<Text>();
         waveText.enabled = false;
-        isFadeout = false;
         StartCoroutine("Updater");
         StartCoroutine("FadeIn");
     }
 
     void Init()
     {
-
+        this.UpdateAsObservable().Where(_ =>
+            Input.GetButtonDown("Menu") && !isClear
+        ).Take(1).Subscribe(_ => {
+            StartFadeOut();
+        });
     }
 
     IEnumerator FadeIn()
@@ -50,7 +58,6 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator FadeOut()
     {
-        isFadeout = true;
         var fi = GetComponentInChildren<FadeImage>();
         var sec = 0.5f;
         var wait = 8 / 1000f;
@@ -66,7 +73,7 @@ public class GameManager : MonoBehaviour {
 
     public void StartFadeOut()
     {
-        if (!isFadeout) StartCoroutine("FadeOut");
+        StartCoroutine("FadeOut");
     }
 
     IEnumerator Updater()
@@ -98,15 +105,5 @@ public class GameManager : MonoBehaviour {
         Debug.Log("CLEAR!");
         SceneManager.LoadScene("Score", LoadSceneMode.Additive);
     }
-	
-	// Update is called once per frame
-	void Update () {
 
-        // TODO:
-        if (Input.GetButtonDown("Menu") && !isClear)
-        {
-            StartFadeOut();
-        }
-
-    }
 }

@@ -15,17 +15,15 @@ public abstract class Enemy : Character
         DEAD = 0xDEAD
     }
 
-    [SerializeField]
-    protected float hp;
+    const float scale = 0.75f;
 
     protected float prev_y, base_y;
-
-    const float scale = 0.75f;
-    
-    public State state { get; private set; }
-
     protected CircleCollider2D coll = null;
 
+    public float hp { get; protected set; }
+    public State state { get; private set; }
+
+    
     protected sealed override void Init()
     {
         transform.localScale = new Vector2(0f, 0f);
@@ -51,6 +49,8 @@ public abstract class Enemy : Character
         {
             StartCoroutine("Disappear");
         }
+
+        prev_y = transform.position.y;
     }
 
     protected virtual void ActionEnemy() { }
