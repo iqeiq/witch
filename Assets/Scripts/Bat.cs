@@ -4,12 +4,12 @@
 public class Bat : Enemy
 {
 
-    public const int maxhp = 2;
+    public override float GetMaxHP() { return 2; }
+
     float th1, th2;
 
     protected override void InitEnemy()
     {
-        hp = maxhp;
         th1 = th2 = 0f;
     }
 

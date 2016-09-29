@@ -9,49 +9,48 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1000010449691368}
+  m_RootGameObject: {fileID: 1000013840482718}
   m_IsPrefabParent: 1
---- !u!1 &1000010449691368
+--- !u!1 &1000013840482718
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 4000011727097140}
-  - 114: {fileID: 114000012254267514}
+  - 4: {fileID: 4000012658039246}
+  - 114: {fileID: 114000011561834362}
   m_Layer: 0
-  m_Name: Wave
+  m_Name: healthbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4000011727097140
+--- !u!4 &4000012658039246
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010449691368}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 1000013840482718}
+  m_LocalRotation: {x: 0.7071068, y: 0.7071068, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 90}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &114000012254267514
+--- !u!114 &114000011561834362
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010449691368}
+  m_GameObject: {fileID: 1000013840482718}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08e199bbd14c748449d352c89eb28ed0, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ca31dd3d3325ac4191ab4d3eff9799a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabs:
-  - {fileID: 1000011767638622, guid: 90635db53e3186d4cba05af5563e4c2d, type: 2}
-  - {fileID: 1000010951000096, guid: af93405a7c9eed345bdb19457c67c478, type: 2}
-  - {fileID: 1000013103571412, guid: 1bcbd53f118731e4ea40a43117489eb3, type: 2}
+  innerPercentage: 0.915
+  fanAngle: 6.29
+  color: {r: 0.52205884, g: 0.52205884, b: 0.52205884, a: 0.265}

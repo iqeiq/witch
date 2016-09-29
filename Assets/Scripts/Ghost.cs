@@ -5,11 +5,10 @@ using System.Collections;
 public class Ghost : Enemy
 {
 
-    public const int maxhp = 3;
-    
+    public override float GetMaxHP() { return 3; }
+
     protected override void InitEnemy()
     {
-        hp = maxhp;
         coll.enabled = true;
     }
 

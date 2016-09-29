@@ -23,6 +23,8 @@ public abstract class Enemy : Character
     public float hp { get; protected set; }
     public State state { get; private set; }
 
+    public abstract float GetMaxHP();
+
     
     protected sealed override void Init()
     {
@@ -30,6 +32,8 @@ public abstract class Enemy : Character
         transform.localRotation = Quaternion.Euler(0, 0, 180);
         coll = GetComponent<CircleCollider2D>();
         coll.enabled = false;
+
+        hp = GetMaxHP();
 
         InitEnemy();
 
@@ -139,6 +143,8 @@ public abstract class Enemy : Character
         state = State.DISAPPEAR;
         coll.enabled = false;
 
+        GameObject.Find("GameManager").GetComponent<GameManager>().AddScore(100);
+        
         var sec = 1.5f;
 
         iTween.RotateTo(gameObject, iTween.Hash(
@@ -170,10 +176,8 @@ public abstract class Enemy : Character
 
         state = State.DEAD;
         SetPosition(1.5f, 1.5f);
-        var gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-        gm.score += 100;
-
-        DestroyImmediate(gameObject);
+        
+        DestroyImmediate(transform.parent.gameObject);
         //Debug.Log("dead");
 
     }

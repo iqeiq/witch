@@ -4,12 +4,17 @@ using UnityEngine.SceneManagement;
 using UniRx;
 using UniRx.Triggers;
 using System.Collections;
+using System;
 using Util;
 
 
 public class GameManager : MonoBehaviour {
 
-    public int score = 0;
+    [SerializeField]
+    public int score { get; private set; }
+
+    const int scoreLimit = 99999999;
+
     public int startStage = 1;
     public int maxStage = 1;
 
@@ -19,16 +24,30 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private GameObject waveTextRef;
 
+    [SerializeField]
+    private Text scoreText;
+
+    [SerializeField]
+    private Text timeText;
+
+    [SerializeField]
+    private Text CountdownText;
+
     Text waveText;
     
     Wave wave = null;
     bool isClear = false;
+
+    [SerializeField]
+    float timeLimit;
     
 	// Use this for initialization
 	void Start () {
         score = 0;
+        timeLimit = 30f;
         waveText = waveTextRef.GetComponent<Text>();
         waveText.enabled = false;
+        CountdownText.enabled = false;
         StartCoroutine("Updater");
         StartCoroutine("FadeIn");
     }
@@ -38,6 +57,29 @@ public class GameManager : MonoBehaviour {
         this.InputAsObservable("Menu").Where(_ => !isClear).Take(1).Subscribe(_ => {
             StartFadeOut();
         });
+
+        this.UpdateAsObservable().Select(_ => (int)Mathf.Floor(timeLimit))
+            .DistinctUntilChanged()
+            .Where(t => 0 <= t && t < 4)
+            .Subscribe(t => { StartCoroutine(Countdown(t)); });
+
+        StartCoroutine("TimeUpdater");
+    }
+
+    public void AddScore(int s)
+    {
+        if (isClear) return;
+        score += s;
+        score = Math.Min(scoreLimit, score);
+        scoreText.text = string.Format("{0:D8}", score);
+    }
+
+    IEnumerator Countdown(int time)
+    {
+        CountdownText.text = string.Format("{0}", time);
+        CountdownText.enabled = true;
+        yield return new WaitForSeconds(0.7f);
+        CountdownText.enabled = false;
     }
 
     IEnumerator FadeIn()
@@ -92,17 +134,46 @@ public class GameManager : MonoBehaviour {
 
             waveText.enabled = false;
 
-            while (!wave.isFinish())
+            while (!wave.isFinish() && !isClear)
             {
                 yield return new WaitForSeconds(0.5f);
             }
             DestroyImmediate(wave.gameObject);
             wave = null;
+
+            // timeover
+            if(isClear)
+            {
+                Debug.Log("TIMEOVER");
+                break;
+            }
             // TODO: 遷移アニメーション
         }
         isClear = true;
         Debug.Log("CLEAR!");
         SceneManager.LoadScene("Score", LoadSceneMode.Additive);
+    }
+
+    IEnumerator TimeUpdater()
+    {
+        var prev = DateTime.UtcNow;
+        while (!isClear)
+        {
+            if (timeLimit > 0)
+            {
+                var now = DateTime.UtcNow;
+                timeLimit -= (float)(now - prev).TotalSeconds;
+                prev = now;
+            }
+            if(timeLimit <= 0f)
+            {
+                timeLimit = 0f;
+                isClear = true;            
+            }
+            timeText.text = string.Format("{0:D2}", (int)Mathf.Floor(timeLimit));
+            yield return new WaitForSeconds(0.3f);
+        }
+        
     }
 
 }

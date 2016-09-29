@@ -31,7 +31,11 @@ public class Player : Character {
             .Buffer(merged.Throttle(TimeSpan.FromMilliseconds(300)))
             .Where(x => x.Count > 0)
             .Subscribe(x => {
-                Debug.Log("" + string.Join(", ", x.Select(m => dic[m]).ToArray()));    
+                Debug.Log("" + string.Join(", ", x.Select(m => dic[m]).ToArray()));
+
+                var pos = transform.position + new Vector3(size.x / 2, 0);
+                Instantiate(magic, pos, Quaternion.identity);
+
             });
 
     }
@@ -44,16 +48,6 @@ public class Player : Character {
         var vy = Input.GetAxis("Vertical");
         Move(new Vector2(0, vy));
 
-        var fire = Input.GetButtonDown("Fire");
-        //var c1 = Input.GetButtonDown("chant A");
-        //var c2 = Input.GetButtonDown("chant B");
-        //var c3 = Input.GetButtonDown("chant C");
-
-        if (fire)
-        {
-            var pos = transform.position + new Vector3(size.x / 2, 0);
-            Instantiate(magic, pos, Quaternion.identity);
-        }
 
     }
 
