@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using UniRx;
 using UniRx.Triggers;
 using System;
-using Util;
 
 
 public class Player : Character {
 
     public GameObject magic;
 
-    enum MagicRune { A, B, C }
+    enum MagicRune { A, B, C, END }
 
     override protected void Init()
     {
@@ -20,23 +19,22 @@ public class Player : Character {
         var dic = new Dictionary<MagicRune, string> {
             { MagicRune.A, "chant A" },
             { MagicRune.B, "chant B" },
-            { MagicRune.C, "chant C" }
+            { MagicRune.C, "chant C" },
         };
 
         var merged = dic.Select(
             d => this.InputAsObservable(d.Value).Select(_ => d.Key)
         ).Merge();
-        
-        merged
-            .Buffer(merged.Throttle(TimeSpan.FromMilliseconds(300)))
-            .Where(x => x.Count > 0)
-            .Subscribe(x => {
-                Debug.Log("" + string.Join(", ", x.Select(m => dic[m]).ToArray()));
 
-                var pos = transform.position + new Vector3(size.x / 2, 0);
-                Instantiate(magic, pos, Quaternion.identity);
+        var trigger = merged.Throttle(TimeSpan.FromMilliseconds(300)).Merge(
+             this.InputAsObservable("Fire").Select(_ => MagicRune.END)
+        );
 
-            });
+        merged.Buffer(trigger).Where(x => x.Count > 0).Subscribe(x => {
+            Debug.Log("" + string.Join(", ", x.Select(m => dic[m]).ToArray()));
+            var pos = transform.position + new Vector3(size.x / 2, 0);
+            Instantiate(magic, pos, Quaternion.identity);
+        });
 
     }
 
@@ -44,11 +42,7 @@ public class Player : Character {
     new void Update ()
     {
         base.Update();
-
-        var vy = Input.GetAxis("Vertical");
-        Move(new Vector2(0, vy));
-
-
+        Move(new Vector2(0, Input.GetAxis("Vertical")));
     }
 
 }

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
+using UniRx.Triggers;
 
 
 public abstract class Enemy : Character
@@ -15,10 +17,15 @@ public abstract class Enemy : Character
         DEAD = 0xDEAD
     }
 
+    
+    [SerializeField]
+    public bool isFreeze = false;
+
     const float scale = 0.75f;
 
     protected float prev_y, base_y;
     protected CircleCollider2D coll = null;
+    protected Animator anim;
 
     public float hp { get; protected set; }
     public State state { get; private set; }
@@ -33,11 +40,19 @@ public abstract class Enemy : Character
         coll = GetComponent<CircleCollider2D>();
         coll.enabled = false;
 
-        hp = GetMaxHP();
-
-        InitEnemy();
+        anim = GetComponent<Animator>();
+        anim.enabled = false;
 
         state = State.READY;
+        isFreeze = false;
+        hp = GetMaxHP();
+
+        this.UpdateAsObservable()
+            .Select(_ => isFreeze)
+            .DistinctUntilChanged()
+            .Subscribe(v => { anim.SetBool("isFreeze", v); });
+        
+        InitEnemy();
     }
 
     protected virtual void InitEnemy() { }
@@ -107,31 +122,8 @@ public abstract class Enemy : Character
         OnAppear();
 
         yield return new WaitForSeconds(UnityEngine.Random.value / 2);
-        Shake1();
+        anim.enabled = true;
         //Debug.Log("alive");
-    }
-
-    void Shake1()
-    {
-        float sec = 1.5f;
-        iTween.RotateTo(gameObject, iTween.Hash(
-            "z", 5,
-            "time", sec,
-            "islocal", true,
-            "easetype", iTween.EaseType.easeInOutQuad,
-            "oncomplete", "Shake2"
-        ));
-    }
-    void Shake2()
-    {
-        float sec = 1.5f;
-        iTween.RotateTo(gameObject, iTween.Hash(
-            "z", -5,
-            "time", sec,
-            "islocal", true,
-            "easetype", iTween.EaseType.easeInOutQuad,
-            "oncomplete", "Shake1"
-        ));
     }
 
     protected virtual void OnAppear() { }

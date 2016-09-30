@@ -5,7 +5,6 @@ using UniRx;
 using UniRx.Triggers;
 using System;
 using System.Collections;
-using Util;
 
 
 public class TitleManager : MonoBehaviour

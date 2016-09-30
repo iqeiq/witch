@@ -5,7 +5,6 @@ using UniRx;
 using UniRx.Triggers;
 using System.Collections;
 using System;
-using Util;
 
 
 public class GameManager : MonoBehaviour {
@@ -151,6 +150,7 @@ public class GameManager : MonoBehaviour {
         }
         isClear = true;
         Debug.Log("CLEAR!");
+        AddScore(100 * (int)Mathf.Floor(timeLimit));
         SceneManager.LoadScene("Score", LoadSceneMode.Additive);
     }
 

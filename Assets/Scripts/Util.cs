@@ -3,8 +3,8 @@ using UniRx;
 using UniRx.Triggers;
 using System;
 
-namespace Util
-{
+//namespace Util
+//{
 
     public static class Util
     {
@@ -22,7 +22,11 @@ namespace Util
 
         static Type __CreateAndGetComponent<Type>(GameObject g, Transform parent = null)
         {
-            if (parent != null) g.transform.parent = parent;
+            if (parent != null)
+            {
+                g.transform.parent = parent;
+                g.transform.position = parent.position;
+            }
             return g.GetComponent<Type>();
         }
 
@@ -37,4 +41,4 @@ namespace Util
         }
     }
 
-}
+//}
