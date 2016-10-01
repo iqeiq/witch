@@ -53,4 +53,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   innerPercentage: 0.865
   fanAngle: 6.29
-  color: {r: 0.372, g: 0.045415223, b: 0.045415223, a: 0.265}
+  color: {r: 1.5, g: 0.47399998, b: 0.46949995, a: 1}

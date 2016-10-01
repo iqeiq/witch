@@ -28,6 +28,7 @@ public class RingObject : MonoBehaviour
     /// <summary>
     /// 色
     /// </summary>
+    [ColorUsage(true, true, 0f, 8f, 0.125f, 3f)]
     public Color color = Color.black;
 
     /// <summary>

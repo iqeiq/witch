@@ -58,7 +58,7 @@ public class RingRenderer : MonoBehaviour
     /// <summary>
     /// マテリアル
     /// </summary>
-    Material material;
+    public Material material;
 
     /// <summary>
     /// リングのデータを渡すための演算バッファ

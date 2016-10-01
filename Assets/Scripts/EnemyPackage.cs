@@ -5,7 +5,8 @@ using UniRx;
 using UniRx.Triggers;
 
 
-public class EnemyPackage : MonoBehaviour {
+public class EnemyPackage : MonoBehaviour
+{
 
     [SerializeField]
     private GameObject enemyPrefab;
@@ -22,9 +23,10 @@ public class EnemyPackage : MonoBehaviour {
 
     private float damageStart = 0f;
     private float damageEnd = 0f;
+    private float damageTimer = 1f;
 
-    // Use this for initialization
-    void Start () {
+    void Awake()
+    {
         enemy = Util.CreateAndGetComponent<Enemy>(enemyPrefab, transform);
         healthbar = Util.CreateAndGetComponent<RingObject>(healthbarPrefab, transform);
         damagebar = Util.CreateAndGetComponent<RingObject>(damagePrefab, transform);
@@ -33,6 +35,7 @@ public class EnemyPackage : MonoBehaviour {
         Debug.Assert(damagebar != null);
 
         damagebar.fanAngle = 0f;
+        damagebar.enabled = false;
         damageStart = enemy.GetMaxHP();
         damageEnd = enemy.GetMaxHP();
 
@@ -43,11 +46,10 @@ public class EnemyPackage : MonoBehaviour {
             .Select(x => new Pair<float>(Mathf.Max(0f, x.Previous), Mathf.Max(0f, x.Current)));
 
         hpChange.Subscribe(x =>{
-            Debug.Log(string.Format("{0} -> {1}", x.Previous, x.Current));
-
-            damageStart -= (x.Previous - x.Current);
-            if (damageStart < 0) damageStart = 0f;
+            //Debug.Log(string.Format("{0} -> {1}", x.Previous, x.Current));
+            damageStart = Mathf.Max(damageStart - (x.Previous - x.Current), 0f);
             damagebar.enabled = true;
+            damageTimer = 1f;
             UpdateDamagebar();
         }).AddTo(damagebar);
 
@@ -58,18 +60,22 @@ public class EnemyPackage : MonoBehaviour {
         }).AddTo(damagebar);
 
 
-
     }
 
     void UpdateHealthbar()
     {
+        healthbar.enabled = (enemy.state == Enemy.State.ALIVE);
+
         float ratio = enemy.hp / enemy.GetMaxHP();
         healthbar.fanAngle = Mathf.Lerp(0, 2 * Mathf.PI, ratio);
+
+        damagebar.color.a = Mathf.Lerp(0, 1f, damageTimer);
+        damageTimer = Mathf.Max(0f, damageTimer - 0.05f);
     }
 
     void UpdateDamagebar()
     {
-        damagebar.color.a = 0.25f;
+        //damagebar.color.a = 0.25f;
 
         float ratio = (damageEnd - damageStart) / enemy.GetMaxHP();
         damagebar.fanAngle = Mathf.Lerp(0, 2 * Mathf.PI, ratio);
@@ -83,7 +89,8 @@ public class EnemyPackage : MonoBehaviour {
 
 
     // Update is called once per frame
-    void Update () {
+    void Update ()
+    {
         healthbar.transform.position = enemy.transform.position;
         damagebar.transform.position = healthbar.transform.position;
         UpdateHealthbar();

@@ -31,7 +31,7 @@ public class Magic : MonoBehaviour {
     {
         coll.enabled = false;
         speed = 0;
-        GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
+        rig.velocity = Vector2.zero;
         ps.Stop();
     }
 
@@ -39,7 +39,8 @@ public class Magic : MonoBehaviour {
     void FixedUpdate () {
 
         var dir = new Vector2(1f , 0f);
-        rig.AddForce(dir * speed);
+        //rig.AddForce(dir * speed);
+        rig.velocity = dir * speed;
 
         if (transform.position.x > max_x && !ps.isStopped)
         {
