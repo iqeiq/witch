@@ -29,10 +29,11 @@ public class TitleManager : MonoBehaviour
             });
         });
 
-        end.onClick.AsObservable()
-            .Merge(this.InputAsObservable("Menu")).Take(1).Subscribe(_ => {
-                Application.Quit();
-            });
+        end.onClick.AsObservable().Merge(
+            this.InputAsObservable(KeyCode.Escape)
+        ).Take(1).Subscribe(_ => {
+            Application.Quit();
+        });
     }
     
 }

@@ -12,55 +12,75 @@ public class Ghost : Enemy
         coll.enabled = true;
     }
 
-
-    IEnumerator ShiftDisappear()
+    IEnumerator DisappearMotion()
     {
-        float appear_sec = 1f;
-        float anim_sec = 2.0f;
-
-        yield return new WaitForSeconds(appear_sec);
-        
-        iTween.ValueTo(render.gameObject, iTween.Hash(
-            "from", 1f,
-            "to", 0.3f,
-            "time", anim_sec,
-            "islocal", true,
-            "onupdate", "alphaUpdate",
-            "easetype", iTween.EaseType.easeInOutQuad
-        ));
-        yield return new WaitForSeconds(anim_sec / 2);
         coll.enabled = false;
-        yield return new WaitForSeconds(anim_sec / 2);
 
-        StartCoroutine("ShiftAppear");
-    }
+        var c = render.color;
+        yield return StartCoroutine(Util.FrameTimer(1000f, (t) =>
+        {
+            render.color = new Color(c.r, c.g, c.b, (1f - t) * 0.5f + 0.25f); // 0.75 -> 0.25
+        }, ()=> {
+            render.color = new Color(c.r, c.g, c.b, 0.25f);
+        }));
+        
+        yield return new WaitForSeconds(1f);
 
-    IEnumerator ShiftAppear()
-    {
-        float disappear_sec = 1f;
-        float anim_sec = 2.0f;
+        yield return StartCoroutine(Util.FrameTimer(1000f, (t) =>
+        {
+            render.color = new Color(c.r, c.g, c.b, t * 0.5f + 0.25f);  // 0.25 -> 0.75
+        }, () => {
+            render.color = new Color(c.r, c.g, c.b, 0.75f);
+        }));
 
-        yield return new WaitForSeconds(disappear_sec);
-
-        iTween.ValueTo(render.gameObject, iTween.Hash(
-            "from", 0.3f,
-            "to", 1f,
-            "time", anim_sec,
-            "islocal", true,
-            "onupdate", "alphaUpdate",
-            "easetype", iTween.EaseType.easeInOutQuad
-        ));
-        yield return new WaitForSeconds(anim_sec / 2);
         coll.enabled = true;
-        yield return new WaitForSeconds(anim_sec / 2);
 
-        StartCoroutine("ShiftDisappear");
+        yield return null;
     }
 
+    IEnumerator AppearMotion()
+    {
+        var c = render.color;
+        yield return StartCoroutine(Util.FrameTimer(1000f, (t) =>
+        {
+            render.color = new Color(c.r, c.g, c.b, (1f + t) * 0.25f + 0.5f); // 0.75 -> 1
+        }, () => {
+            render.color = new Color(c.r, c.g, c.b, 1f);
+        }));
+        
+        yield return new WaitForSeconds(1f);
 
+        if (isFreeze)
+        {
+            yield break;
+        }
 
+        yield return StartCoroutine(Util.FrameTimer(1000f, (t) =>
+        {
+            render.color = new Color(c.r, c.g, c.b, (2f - t) * 0.25f + 0.5f); // 1 -> 0.75
+        }, () => {
+            render.color = new Color(c.r, c.g, c.b, 0.75f);
+        }));
+
+        yield return null;
+    }
+
+    IEnumerator ToggleDisappear()
+    {
+        while (true)
+        {
+            if (isFreeze)
+            {
+                yield return new WaitForEndOfFrame();
+                continue;
+            }
+            yield return StartCoroutine(DisappearMotion());
+            yield return StartCoroutine(AppearMotion());
+        }
+    }
+    
     protected override void OnAppear()
     {
-        StartCoroutine("ShiftDisappear");   
+        StartCoroutine(ToggleDisappear());   
     }
 }

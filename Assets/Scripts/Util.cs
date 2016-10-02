@@ -33,6 +33,11 @@ public static class Util
         return self.UpdateAsObservable().Where(_ => Input.GetButtonDown(name));
     }
 
+    public static IObservable<Unit> InputAsObservable(this MonoBehaviour self, KeyCode key)
+    {
+        return self.UpdateAsObservable().Where(_ => Input.GetKeyDown(key));
+    }
+
     public static IObservable<Type> ToObservable<Type>(this MonoBehaviour self, Func<Type> pred)
     {
         return self.UpdateAsObservable().Select(_ => pred());
@@ -51,6 +56,7 @@ public static class Util
             prev = now;
         }
         if (oncomp != null) oncomp();
+        yield return null;
     }
 
     public static void FadeIn(this MonoBehaviour self, float ms, Action oncomp = null)

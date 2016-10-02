@@ -19,7 +19,10 @@ public abstract class Enemy : Character
 
     
     [SerializeField]
-    public bool isFreeze = false;
+    protected bool isFreeze = false;
+
+    [SerializeField]
+    private GameObject freezePrefab;
 
     const float scale = 0.75f;
 
@@ -31,6 +34,7 @@ public abstract class Enemy : Character
     public State state { get; private set; }
 
     public abstract float GetMaxHP();
+    
 
     
     protected sealed override void Init()
@@ -47,10 +51,20 @@ public abstract class Enemy : Character
         isFreeze = false;
         hp = GetMaxHP();
 
-        this.UpdateAsObservable()
-            .Select(_ => isFreeze)
+
+        var fr = Util.CreateAndGetComponent<SpriteRenderer>(freezePrefab, transform);
+        fr.enabled = false;
+        var fc = fr.GetComponent<BoxCollider2D>();
+        fc.enabled = false;
+
+        this.ToObservable(() => isFreeze)
             .DistinctUntilChanged()
-            .Subscribe(v => { anim.SetBool("isFreeze", v); });
+            .Subscribe(v => {
+                anim.SetBool("isFreeze", v);
+                fr.enabled = v;
+                fc.enabled = v;
+                coll.enabled = !v;
+            });
         
         InitEnemy();
     }
@@ -61,8 +75,11 @@ public abstract class Enemy : Character
     void Action()
     {
         Debug.Assert(state == State.ALIVE);
-            
-        ActionEnemy();
+        
+        if (!isFreeze)
+        {
+            ActionEnemy();
+        }
 
         if (!(hp > 0))
         {
@@ -134,6 +151,7 @@ public abstract class Enemy : Character
         Debug.Assert(state == State.ALIVE);
         state = State.DISAPPEAR;
         coll.enabled = false;
+        isFreeze = false;
 
         GameObject.Find("GameManager").GetComponent<GameManager>().AddScore(100);
         
@@ -177,7 +195,14 @@ public abstract class Enemy : Character
     void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Assert(other.tag == "Magic");
-        hp -= other.GetComponent<Magic>().damage;
+        var m = other.GetComponent<Magic>();
+        Damage(m);
+    }
+
+    public void Damage(Magic m)
+    {
+        hp -= m.damage;
+        if(m.arche == Magic.Arche.FROST) isFreeze = true;
     }
 
 

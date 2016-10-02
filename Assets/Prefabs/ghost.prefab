@@ -87,6 +87,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   isFreeze: 0
+  freezePrefab: {fileID: 1000010534298098, guid: 4d9e2a660c9cec24c810b0afe9486fcd,
+    type: 2}
 --- !u!212 &212000011590227484
 SpriteRenderer:
   m_ObjectHideFlags: 1

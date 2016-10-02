@@ -3,8 +3,32 @@
 
 public class Magic : MonoBehaviour {
 
-    public float speed = 5.0f;
-    public float damage = 2.0f;
+    public enum Type
+    {
+        NORMAL = 0,
+        PENETRATE,
+        DIFFUSE,
+        TURRET,
+        BUFFER
+    }
+
+    public enum Arche
+    {
+        FLAME   = 0x01,
+        WIND    = 0x02,
+        AQUA    = 0x04,
+        FROST   = WIND  | AQUA,
+        HOLY    = FLAME | WIND,
+        DARK    = FLAME | AQUA,
+        VOID    = FLAME | WIND | AQUA
+    }
+
+
+    private float speed = 5.0f;
+    public float damage { get; private set; }
+    public Type type { get; private set; }
+    public Arche arche { get; private set; }
+
 
     ParticleSystem ps = null;
     Rigidbody2D rig = null;
@@ -24,11 +48,25 @@ public class Magic : MonoBehaviour {
         
     }
 
+    public void Set(Arche ar = Arche.VOID, Type ty = Type.NORMAL, float sp = 5f, float dmg = 2f)
+    {
+        arche = ar;
+        type = ty;
+        speed = sp;
+        damage = dmg;
+        var r = (arche & Arche.FLAME) > 0 ? 1f : 0f;
+        var g = (arche & Arche.WIND) > 0 ? 1f : 0f;
+        var b = (arche & Arche.AQUA) > 0 ? 1f : 0f;
+        ps.startColor = new Color(r, g, b, 1f);
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Assert(other.tag == "Enemy");
         //Debug.LogFormat("hit {0}", other);
-        Stop();
+
+        if (type != Type.PENETRATE)
+            Stop();
     }
 
     void Stop()

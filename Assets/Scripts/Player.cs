@@ -9,7 +9,7 @@ using System;
 
 public class Player : Character {
 
-    enum MagicRune { A, B, C, END }
+    enum MagicRune { A = 0x01, B = 0x02, C = 0x04, END }
 
     public GameObject magic;
 
@@ -43,10 +43,14 @@ public class Player : Character {
             d => this.InputAsObservable("chant " + d.Value).Select(_ => d.Key)
         ).Merge();
 
+        var ringColor = new Dictionary<MagicRune, Color> {
+            { MagicRune.A, new Color(1f, 0.25f, 0.25f, 1f) },
+            { MagicRune.B, new Color(0.25f, 1f, 0.25f, 1f) },
+            { MagicRune.C, new Color(0.25f, 0.25f, 1f, 1f) },
+        };
+
         merged.Subscribe(x => {
-            var from = new Color(0.25f, 1f, 0.25f, 1f);
-            var to = new Color(0.25f, 0.25f, 0.25f, 1f);
-            rings[x].Emit(from, to, interval);
+            rings[x].Emit(ringColor[x], new Color(0.25f, 0.25f, 0.25f, 1f), interval);
         });
         
         merged.Buffer(
@@ -56,12 +60,36 @@ public class Player : Character {
         ).Where(
             x => x.Count > 0
         ).Subscribe(x => {
-            Debug.Log("" + string.Join(", ", x.Select(m => dic[m]).ToArray()));
-
+            //Debug.Log("" + string.Join(", ", x.Select(n => dic[n]).ToArray()));
             var pos = transform.position + new Vector3(size.x / 2, 0);
-            Util.CreateAndGetComponent<Magic>(magic, pos);
+            var m = Util.CreateAndGetComponent<Magic>(magic, pos);
+            SetMagic(m, x.ToArray());
         });
 
+    }
+
+    void SetMagic(Magic m, MagicRune[] runes)
+    {
+        Magic.Arche ar = Magic.Arche.VOID;
+        Magic.Type ty = Magic.Type.NORMAL;
+        var sp = 5f;
+        var dmg = 2f;
+        if (runes.Length == 1)
+        {
+            ar = (Magic.Arche)runes[0];
+        }
+        else if(runes.Length == 2)
+        {
+            ar = (Magic.Arche)(runes[0] | runes[1]);
+            dmg = 3f;
+            sp = 8f;
+        }
+        else if(runes.Length == 3)
+        {
+
+        }
+        if (ar == Magic.Arche.HOLY) ty = Magic.Type.PENETRATE;
+        m.Set(ar, ty, sp, dmg);
     }
     
     // Update is called once per frame

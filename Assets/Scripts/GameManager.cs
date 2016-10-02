@@ -121,9 +121,9 @@ public class GameManager : MonoBehaviour {
             }
             // TODO: 遷移アニメーション
         }
+        AddScore(100 * (int)Mathf.Floor(timeLimit));
         isClear = true;
         Debug.Log("CLEAR!");
-        AddScore(100 * (int)Mathf.Floor(timeLimit));
         SceneManager.LoadScene("Score", LoadSceneMode.Additive);
     }
 
