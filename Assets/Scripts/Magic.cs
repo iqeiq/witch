@@ -12,12 +12,16 @@ public class Magic : MonoBehaviour {
 
     float max_x;
 
-    // Use this for initialization
-    void Start () {
+    void Awake()
+    {
         ps = GetComponent<ParticleSystem>();
         rig = GetComponent<Rigidbody2D>();
         coll = GetComponent<CircleCollider2D>();
         max_x = Camera.main.ViewportToWorldPoint(new Vector2(1.0f, 0.5f)).x;
+    }
+
+    void Start () {
+        
     }
 
     void OnTriggerEnter2D(Collider2D other)

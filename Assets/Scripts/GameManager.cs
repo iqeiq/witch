@@ -47,8 +47,9 @@ public class GameManager : MonoBehaviour {
         waveText = waveTextRef.GetComponent<Text>();
         waveText.enabled = false;
         CountdownText.enabled = false;
-        StartCoroutine("Updater");
-        StartCoroutine("FadeIn");
+        StartCoroutine(Updater());
+
+        this.FadeIn(500, Init);
     }
 
     void Init()
@@ -62,7 +63,7 @@ public class GameManager : MonoBehaviour {
             .Where(t => 0 <= t && t < 4)
             .Subscribe(t => { StartCoroutine(Countdown(t)); });
 
-        StartCoroutine("TimeUpdater");
+        StartCoroutine(TimeUpdater());
     }
 
     public void AddScore(int s)
@@ -81,39 +82,11 @@ public class GameManager : MonoBehaviour {
         CountdownText.enabled = false;
     }
 
-    IEnumerator FadeIn()
-    {
-        var fi = GetComponentInChildren<FadeImage>();
-        var sec = 0.2f;
-        var wait = 8 / 1000f;
-        var div = sec / wait;
-        for (var i = 0; i < div; ++i)
-        {
-            fi.Range = 1f - i / div;
-            yield return new WaitForSeconds(wait);
-        }
-        fi.Range = 0f;
-        Init();
-    }
-
-    IEnumerator FadeOut()
-    {
-        var fi = GetComponentInChildren<FadeImage>();
-        var sec = 0.5f;
-        var wait = 8 / 1000f;
-        var div = sec / wait;
-        for (var  i = 0; i < div; ++i)
-        {
-            fi.Range = i / div;
-            yield return new WaitForSeconds(wait);
-        }
-        fi.Range = 1f;
-        SceneManager.LoadScene("Title");
-    }
-
     public void StartFadeOut()
     {
-        StartCoroutine("FadeOut");
+        this.FadeOut(500, ()=> {
+            SceneManager.LoadScene("Title");
+        });
     }
 
     IEnumerator Updater()

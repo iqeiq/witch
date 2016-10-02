@@ -18,13 +18,15 @@ public class TitleManager : MonoBehaviour
 
     // Use this for initialization
     void Start () {
-        StartCoroutine("FadeIn");
+        this.FadeIn(500, Init);
     }
 
     void Init()
     {
         start.onClick.AsObservable().Take(1).Subscribe(_ => {
-            StartCoroutine("FadeOut");
+            this.FadeOut(500, () => {
+                SceneManager.LoadScene("Main");
+            });
         });
 
         end.onClick.AsObservable()
@@ -32,36 +34,5 @@ public class TitleManager : MonoBehaviour
                 Application.Quit();
             });
     }
-
-    IEnumerator FadeIn()
-    {
-        var fi = GetComponentInChildren<FadeImage>();
-        var sec = 0.5f;
-        var wait = 8 / 1000f;
-        var div = sec / wait;
-        for (var i = 0; i < div; ++i)
-        {
-            fi.Range = 1f - i / div;
-            yield return new WaitForSeconds(wait);
-        }
-        fi.Range = 0f;
-        Init();
-    }
-
-    IEnumerator FadeOut()
-    {
-        Debug.Log("Title -> Main");
-        var fi = GetComponentInChildren<FadeImage>();
-        var sec = 0.2f;
-        var wait = 8 / 1000f;
-        var div = sec / wait;
-        for (var i = 0; i < div; ++i)
-        {
-            fi.Range = i / div;
-            yield return new WaitForSeconds(wait);
-        }
-        fi.Range = 1f;
-        SceneManager.LoadScene("Main");
-    }
-
+    
 }

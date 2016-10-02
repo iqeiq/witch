@@ -16,7 +16,7 @@ public class Player : Character {
     [SerializeField]
     private float interval = 300f;
     
-    Dictionary<MagicRune, PlayerRing> rings;
+    Dictionary<MagicRune, EmitRing> rings;
 
     override protected void Init()
     {
@@ -28,13 +28,13 @@ public class Player : Character {
             { MagicRune.C, "C" },
         };
 
-        rings = new Dictionary<MagicRune, PlayerRing>();
+        rings = new Dictionary<MagicRune, EmitRing>();
 
         foreach (var d in dic)
         {
             rings.Add(
                 d.Key,
-                GameObject.Find("ring" + d.Value).GetComponent<PlayerRing>()
+                GameObject.Find("ring" + d.Value).GetComponent<EmitRing>()
             );
         }
 
@@ -46,15 +46,18 @@ public class Player : Character {
         merged.Subscribe(x => {
             var from = new Color(0.25f, 1f, 0.25f, 1f);
             var to = new Color(0.25f, 0.25f, 0.25f, 1f);
-            rings[x].Emit(from, to, interval - 100);
+            rings[x].Emit(from, to, interval);
         });
         
-        var trigger = merged.Throttle(TimeSpan.FromMilliseconds(interval)).Merge(
-             this.InputAsObservable("Fire").Select(_ => MagicRune.END)
-        );
-
-        merged.Buffer(trigger).Where(x => x.Count > 0).Subscribe(x => {
+        merged.Buffer(
+            merged.Throttle(TimeSpan.FromMilliseconds(interval)).Merge(
+                this.InputAsObservable("Fire").Select(_ => MagicRune.END)
+            )
+        ).Where(
+            x => x.Count > 0
+        ).Subscribe(x => {
             Debug.Log("" + string.Join(", ", x.Select(m => dic[m]).ToArray()));
+
             var pos = transform.position + new Vector3(size.x / 2, 0);
             Util.CreateAndGetComponent<Magic>(magic, pos);
         });

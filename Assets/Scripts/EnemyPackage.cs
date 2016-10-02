@@ -19,41 +19,45 @@ public class EnemyPackage : MonoBehaviour
 
     private Enemy enemy = null;
     private RingObject healthbar = null;
-    private RingObject damagebar = null;
+    private EmitRing damagebar = null;
 
     private float damageStart = 0f;
     private float damageEnd = 0f;
-    private float damageTimer = 1f;
+
 
     void Awake()
     {
         enemy = Util.CreateAndGetComponent<Enemy>(enemyPrefab, transform);
         healthbar = Util.CreateAndGetComponent<RingObject>(healthbarPrefab, transform);
-        damagebar = Util.CreateAndGetComponent<RingObject>(damagePrefab, transform);
+        damagebar = Util.CreateAndGetComponent<EmitRing>(damagePrefab, transform);
         Debug.Assert(enemy != null);
         Debug.Assert(healthbar != null);
         Debug.Assert(damagebar != null);
 
-        damagebar.fanAngle = 0f;
-        damagebar.enabled = false;
+        damagebar.ring.fanAngle = 0f;
+        damagebar.ring.enabled = false;
         damageStart = enemy.GetMaxHP();
         damageEnd = enemy.GetMaxHP();
 
-        var hpChange = this.UpdateAsObservable()
-            .Select(_ => enemy.hp)
+        var hpChange = this.ToObservable(() => enemy.hp)
             .DistinctUntilChanged()
             .Pairwise()
-            .Select(x => new Pair<float>(Mathf.Max(0f, x.Previous), Mathf.Max(0f, x.Current)));
+            .Select(x => new Pair<float>(x.Previous, Mathf.Max(0f, x.Current)));
 
         hpChange.Subscribe(x =>{
             //Debug.Log(string.Format("{0} -> {1}", x.Previous, x.Current));
             damageStart = Mathf.Max(damageStart - (x.Previous - x.Current), 0f);
-            damagebar.enabled = true;
-            damageTimer = 1f;
+            damagebar.ring.enabled = true;
             UpdateDamagebar();
+            var c = damagebar.ring.color;
+            var from = new Color(c.r, c.g, c.b, 1f);
+            var to = new Color(c.r, c.g, c.b, 0f);
+            damagebar.Emit(from, to, 300);
         }).AddTo(damagebar);
 
-        hpChange.Delay(TimeSpan.FromMilliseconds(500)).Subscribe(x => {
+        hpChange.Delay(
+            TimeSpan.FromMilliseconds(500)
+        ).Subscribe(x => {
             damageEnd = x.Current;
             UpdateDamagebar();
             if (damageEnd == damageStart) damagebar.enabled = false;
@@ -68,17 +72,13 @@ public class EnemyPackage : MonoBehaviour
 
         float ratio = enemy.hp / enemy.GetMaxHP();
         healthbar.fanAngle = Mathf.Lerp(0, 2 * Mathf.PI, ratio);
-
-        damagebar.color.a = Mathf.Lerp(0, 1f, damageTimer);
-        damageTimer = Mathf.Max(0f, damageTimer - 0.05f);
+        
     }
 
     void UpdateDamagebar()
     {
-        //damagebar.color.a = 0.25f;
-
         float ratio = (damageEnd - damageStart) / enemy.GetMaxHP();
-        damagebar.fanAngle = Mathf.Lerp(0, 2 * Mathf.PI, ratio);
+        damagebar.ring.fanAngle = Mathf.Lerp(0, 2 * Mathf.PI, ratio);
 
         var ang = Mathf.Lerp(0, 360, damageStart / enemy.GetMaxHP());
         var rot = damagebar.transform.rotation.eulerAngles;
