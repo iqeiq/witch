@@ -11,7 +11,7 @@ public class Player : Character {
 
     enum MagicRune { A = 0x01, B = 0x02, C = 0x04, END }
 
-    public GameObject magic;
+    public GameObject[] magics;
 
     [SerializeField]
     private float interval = 300f;
@@ -52,7 +52,7 @@ public class Player : Character {
         merged.Subscribe(x => {
             rings[x].Emit(ringColor[x], new Color(0.25f, 0.25f, 0.25f, 1f), interval);
         });
-        
+
         merged.Buffer(
             merged.Throttle(TimeSpan.FromMilliseconds(interval)).Merge(
                 this.InputAsObservable("Fire").Select(_ => MagicRune.END)
@@ -60,16 +60,18 @@ public class Player : Character {
         ).Where(
             x => x.Count > 0
         ).Subscribe(x => {
+            //Debug.Log(x.Count);
             //Debug.Log("" + string.Join(", ", x.Select(n => dic[n]).ToArray()));
-            var pos = transform.position + new Vector3(size.x / 2, 0);
-            var m = Util.CreateAndGetComponent<Magic>(magic, pos);
-            SetMagic(m, x.ToArray());
+            SetMagic(x.ToArray());
         });
 
     }
 
-    void SetMagic(Magic m, MagicRune[] runes)
+    void SetMagic(MagicRune[] runes)
     {
+        var pos = transform.position + new Vector3(size.x / 2, 0);
+        var m = Util.CreateAndGetComponent<Magic>(magics[0], pos);
+        
         Magic.Arche ar = Magic.Arche.VOID;
         Magic.Type ty = Magic.Type.NORMAL;
         var sp = 5f;
@@ -78,17 +80,48 @@ public class Player : Character {
         {
             ar = (Magic.Arche)runes[0];
         }
-        else if(runes.Length == 2)
+        else if (runes.Length == 2)
         {
             ar = (Magic.Arche)(runes[0] | runes[1]);
-            dmg = 3f;
             sp = 8f;
-        }
-        else if(runes.Length == 3)
-        {
+            if (ar == Magic.Arche.HOLY)
+            {
+                ty = Magic.Type.PENETRATE;
+                sp = 6f;
+            }
+            else if (ar == Magic.Arche.FROST)
+            {
+                dmg = 1f;
+                sp = 6f;
+            }
+            else if (ar == Magic.Arche.DARK)
+            {
+                dmg = 2f;
+                sp = 6f;
+                ty = Magic.Type.CONTINUOUS;
+            }
+            else if (ar == Magic.Arche.WIND)
+            {
+                dmg = 4f;
+                sp = 8f;
+            }
+            else if (ar == Magic.Arche.FLAME)
+            {
+                sp = 6f;
+                ty = Magic.Type.DIFFUSE;
+            }
 
         }
-        if (ar == Magic.Arche.HOLY) ty = Magic.Type.PENETRATE;
+        else if (runes.Length == 3)
+        {
+
+            return;
+        }
+        else
+        {
+            dmg = 1;
+            sp = 3f;
+        }
         m.Set(ar, ty, sp, dmg);
     }
     

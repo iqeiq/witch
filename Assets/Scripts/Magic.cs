@@ -6,10 +6,11 @@ public class Magic : MonoBehaviour {
     public enum Type
     {
         NORMAL = 0,
-        PENETRATE,
-        DIFFUSE,
-        TURRET,
-        BUFFER
+        PENETRATE,  // holy
+        DIFFUSE,    // explotion
+        CONTINUOUS, // poison
+        TURRET,     // water
+        BUFFER      // buff
     }
 
     public enum Arche
@@ -44,10 +45,6 @@ public class Magic : MonoBehaviour {
         max_x = Camera.main.ViewportToWorldPoint(new Vector2(1.0f, 0.5f)).x;
     }
 
-    void Start () {
-        
-    }
-
     public void Set(Arche ar = Arche.VOID, Type ty = Type.NORMAL, float sp = 5f, float dmg = 2f)
     {
         arche = ar;
@@ -57,6 +54,7 @@ public class Magic : MonoBehaviour {
         var r = (arche & Arche.FLAME) > 0 ? 1f : 0f;
         var g = (arche & Arche.WIND) > 0 ? 1f : 0f;
         var b = (arche & Arche.AQUA) > 0 ? 1f : 0f;
+        g = Mathf.Min(1f, g + (b > 0.5f ? 0.4f : 0f));
         ps.startColor = new Color(r, g, b, 1f);
     }
 

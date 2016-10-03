@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour {
     float timeLimit;
     
 	// Use this for initialization
-	void Start () {
+    void Start () {
         score = 0;
         timeLimit = 90f;
         waveText = waveTextRef.GetComponent<Text>();
