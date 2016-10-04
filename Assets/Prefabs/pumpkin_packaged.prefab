@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000014187793556}
   - 114: {fileID: 114000013736563826}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: pumpkin_packaged
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -194,7 +194,8 @@ public abstract class Enemy : Character
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Assert(other.tag == "Magic");
+        if (other.tag != "Magic") return;
+
         var m = other.GetComponent<Magic>();
         Damage(m);
     }

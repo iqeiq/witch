@@ -116,14 +116,14 @@ public class GameManager : MonoBehaviour {
             // timeover
             if(isClear)
             {
-                Debug.Log("TIMEOVER");
+                //Debug.Log("TIMEOVER");
                 break;
             }
             // TODO: 遷移アニメーション
         }
         AddScore(100 * (int)Mathf.Floor(timeLimit));
         isClear = true;
-        Debug.Log("CLEAR!");
+        //Debug.Log("CLEAR!");
         SceneManager.LoadScene("Score", LoadSceneMode.Additive);
     }
 

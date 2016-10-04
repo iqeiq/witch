@@ -11,7 +11,8 @@ public class Player : Character {
 
     enum MagicRune { A = 0x01, B = 0x02, C = 0x04, END }
 
-    public GameObject[] magics;
+    [SerializeField]
+    private GameObject[] magics;
 
     [SerializeField]
     private float interval = 300f;

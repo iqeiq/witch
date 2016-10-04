@@ -22,7 +22,7 @@ GameObject:
   - 212: {fileID: 212000012567199432}
   - 61: {fileID: 61000010173104246}
   - 114: {fileID: 114000010291282916}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: freeze
   m_TagString: Enemy
   m_Icon: {fileID: 0}

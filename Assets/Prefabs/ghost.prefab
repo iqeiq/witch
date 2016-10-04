@@ -23,7 +23,7 @@ GameObject:
   - 114: {fileID: 114000011624725086}
   - 58: {fileID: 58000013743191482}
   - 95: {fileID: 95000014224838110}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: ghost
   m_TagString: Enemy
   m_Icon: {fileID: 0}

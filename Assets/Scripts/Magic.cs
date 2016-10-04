@@ -60,9 +60,8 @@ public class Magic : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Assert(other.tag == "Enemy");
-        //Debug.LogFormat("hit {0}", other);
-
+        if (other.tag != "Enemy") return;
+        
         if (type != Type.PENETRATE)
             Stop();
     }

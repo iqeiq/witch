@@ -2,14 +2,15 @@
 // http://notargs.com/blog/blog/2015/02/03/unity%E3%81%8B%E3%81%A3%E3%81%93%E3%82%88%E3%81%8F%E6%B2%A2%E5%B1%B1%E3%81%AE%E5%86%86%E3%82%92%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80/
 
 Shader "Custom/RingShader" {
-	Properties{
-		_MainTex("Base (RGB) Gloss (A)", 2D) = "white" {}
-		_Illum("Illumin (A)", 2D) = "white" {}
-		_EmissionLM("Emission (Lightmapper)", Float) = 0
-	}
 	SubShader {
 		Blend SrcAlpha OneMinusSrcAlpha
 		Cull Off
+		Lighting Off
+		ZWrite Off
+		ZTest Always
+		Tags { 
+			"Queue" = "Geometry-100" 
+		}
 		Pass {
 	        CGPROGRAM
 	        
