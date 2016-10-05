@@ -96,11 +96,11 @@ public class Player : Character {
             else if (ar == Magic.Arche.FROST)
             {
                 dmg = 1f;
-                sp = 6f;
+                sp = 8f;
             }
             else if (ar == Magic.Arche.DARK)
             {
-                dmg = 0.5f;
+                dmg = 0.8f;
                 sp = 6f;
                 ty = Magic.Type.RATIO;
             }
