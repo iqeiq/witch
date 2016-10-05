@@ -8,9 +8,7 @@ public class Magic : MonoBehaviour {
         NORMAL = 0,
         PENETRATE,  // holy
         DIFFUSE,    // explotion
-        CONTINUOUS, // poison
-        TURRET,     // water
-        BUFFER      // buff
+        RATIO
     }
 
     public enum Arche
@@ -18,9 +16,9 @@ public class Magic : MonoBehaviour {
         FLAME   = 0x01,
         WIND    = 0x02,
         AQUA    = 0x04,
-        FROST   = WIND  | AQUA,
         HOLY    = FLAME | WIND,
         DARK    = FLAME | AQUA,
+        FROST   = WIND  | AQUA,
         VOID    = FLAME | WIND | AQUA
     }
 

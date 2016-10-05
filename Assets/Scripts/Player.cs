@@ -45,9 +45,9 @@ public class Player : Character {
         ).Merge();
 
         var ringColor = new Dictionary<MagicRune, Color> {
-            { MagicRune.A, new Color(1f, 0.25f, 0.25f, 1f) },
-            { MagicRune.B, new Color(0.25f, 1f, 0.25f, 1f) },
-            { MagicRune.C, new Color(0.25f, 0.25f, 1f, 1f) },
+            { MagicRune.A, new Color(1.7f, 0.16f, 0.16f, 1f) },
+            { MagicRune.B, new Color(0.16f, 1.7f, 0.16f, 1f) },
+            { MagicRune.C, new Color(0.16f, 0.16f, 1.7f, 1f) },
         };
 
         merged.Subscribe(x => {
@@ -71,12 +71,13 @@ public class Player : Character {
     void SetMagic(MagicRune[] runes)
     {
         var pos = transform.position + new Vector3(size.x / 2, 0);
-        var m = Util.CreateAndGetComponent<Magic>(magics[0], pos);
         
         Magic.Arche ar = Magic.Arche.VOID;
         Magic.Type ty = Magic.Type.NORMAL;
         var sp = 5f;
         var dmg = 2f;
+        var idx = 0;
+
         if (runes.Length == 1)
         {
             ar = (Magic.Arche)runes[0];
@@ -85,6 +86,8 @@ public class Player : Character {
         {
             ar = (Magic.Arche)(runes[0] | runes[1]);
             sp = 8f;
+            idx = (int)ar;
+
             if (ar == Magic.Arche.HOLY)
             {
                 ty = Magic.Type.PENETRATE;
@@ -97,19 +100,25 @@ public class Player : Character {
             }
             else if (ar == Magic.Arche.DARK)
             {
-                dmg = 2f;
+                dmg = 0.5f;
                 sp = 6f;
-                ty = Magic.Type.CONTINUOUS;
+                ty = Magic.Type.RATIO;
             }
             else if (ar == Magic.Arche.WIND)
             {
                 dmg = 4f;
-                sp = 8f;
+                sp = 10f;
             }
             else if (ar == Magic.Arche.FLAME)
             {
                 sp = 6f;
                 ty = Magic.Type.DIFFUSE;
+            }
+            else if (ar == Magic.Arche.AQUA)
+            {
+                var g = Instantiate(magics[idx]) as GameObject;
+                g.transform.position = pos;
+                return;
             }
 
         }
@@ -123,13 +132,14 @@ public class Player : Character {
             dmg = 1;
             sp = 3f;
         }
+        var m = Util.CreateAndGetComponent<Magic>(magics[idx], pos);
         m.Set(ar, ty, sp, dmg);
     }
     
     // Update is called once per frame
-    new void Update ()
+    new void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
         Move(new Vector2(0, Input.GetAxis("Vertical")));
     }
 

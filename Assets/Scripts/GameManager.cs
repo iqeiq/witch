@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
     void Start () {
         score = 0;
-        timeLimit = 90f;
+        timeLimit = 120f;
         waveText = waveTextRef.GetComponent<Text>();
         waveText.enabled = false;
         CountdownText.enabled = false;
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour {
             StartFadeOut();
         });
 
-        this.UpdateAsObservable().Select(_ => (int)Mathf.Floor(timeLimit))
+        this.UpdateAsObservable().Select(_ => (int)Mathf.Ceil(timeLimit))
             .DistinctUntilChanged()
             .Where(t => 0 <= t && t < 4)
             .Subscribe(t => { StartCoroutine(Countdown(t)); });
@@ -102,13 +102,13 @@ public class GameManager : MonoBehaviour {
             waveText.text = "WAVE " + stage;
             waveText.enabled = true;
             
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.7f);
 
             waveText.enabled = false;
 
             while (!wave.isFinish() && !isClear)
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.2f);
             }
             DestroyImmediate(wave.gameObject);
             wave = null;
@@ -121,9 +121,10 @@ public class GameManager : MonoBehaviour {
             }
             // TODO: 遷移アニメーション
         }
-        AddScore(100 * (int)Mathf.Floor(timeLimit));
+        AddScore(100 * (int)Mathf.Ceil(timeLimit));
         isClear = true;
         //Debug.Log("CLEAR!");
+        yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene("Score", LoadSceneMode.Additive);
     }
 
@@ -143,7 +144,7 @@ public class GameManager : MonoBehaviour {
                 timeLimit = 0f;
                 isClear = true;            
             }
-            timeText.text = string.Format("{0:D2}", (int)Mathf.Floor(timeLimit));
+            timeText.text = string.Format("{0:D2}", (int)Mathf.Ceil(timeLimit));
             yield return new WaitForSeconds(0.3f);
         }
         

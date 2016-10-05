@@ -202,15 +202,17 @@ public abstract class Enemy : Character
 
     public void Damage(Magic m)
     {
-        hp -= m.damage;
-        if(m.arche == Magic.Arche.FROST) isFreeze = true;
+        var dmg = m.damage;
+        if (m.arche == Magic.Arche.FROST) isFreeze = true;
+        if (m.type == Magic.Type.RATIO) dmg = hp * dmg;
+        hp -= dmg;
     }
 
 
     // Update is called once per frame
-    new void Update ()
+    new void FixedUpdate ()
     {
-        base.Update();
+        base.FixedUpdate();
 
         switch (state)
         {

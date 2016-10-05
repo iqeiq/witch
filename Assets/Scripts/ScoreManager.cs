@@ -17,11 +17,23 @@ public class ScoreManager : MonoBehaviour
 
     string GetRank(int score)
     {
-        if(score > 1000)
+        if (score > 9300)
+        {
+            return "S";
+        }
+        else if (score > 6300)
         {
             return "A";
         }
-        return "B";
+        else if (score > 4300)
+        {
+            return "B";
+        }
+        else if (score > 2300)
+        {
+            return "C";
+        }
+        return "D";
     }
 
     void Awake ()
