@@ -34,9 +34,9 @@ public abstract class Enemy : Character
     public State state { get; private set; }
 
     public abstract float GetMaxHP();
-    
 
-    
+
+
     protected sealed override void Init()
     {
         transform.localScale = new Vector2(0f, 0f);
@@ -58,21 +58,34 @@ public abstract class Enemy : Character
         fc.enabled = false;
 
         this.ToObservable(() => isFreeze)
+            .Where(_ => hp > 0 && state == State.ALIVE)
             .DistinctUntilChanged()
-            .Subscribe(v => {
+            .Subscribe(v =>
+            {
                 anim.SetBool("isFreeze", v);
                 fr.enabled = v;
                 fc.enabled = v;
                 coll.enabled = !v;
             });
-        
+
         InitEnemy();
+
+        this.ToObservable(() => hp)
+            .Where(h => !(h > 0) && state == State.ALIVE)
+            .Take(1)
+            .Subscribe(v =>{
+                StartCoroutine(Disappear());
+                fc.enabled = false;
+                //isFreeze = false;
+            });
+
+        StartCoroutine(Appear());
     }
 
     protected virtual void InitEnemy() { }
 
 
-    void Action()
+    /*void Action()
     {
         Debug.Assert(state == State.ALIVE);
         
@@ -80,14 +93,8 @@ public abstract class Enemy : Character
         {
             ActionEnemy();
         }
-
-        if (!(hp > 0))
-        {
-            StartCoroutine("Disappear");
-        }
-
         prev_y = transform.position.y;
-    }
+    }*/
 
     protected virtual void ActionEnemy() { }
 
@@ -136,11 +143,21 @@ public abstract class Enemy : Character
         base_y = prev_y = transform.position.y;
         state = State.ALIVE;
         coll.enabled = true;
-        OnAppear();
-
+        
         yield return new WaitForSeconds(UnityEngine.Random.value / 2);
         anim.enabled = true;
         //Debug.Log("alive");
+
+        this.FixedUpdateAsObservable()
+            .Where(_ => !isFreeze && state == State.ALIVE)
+            .Subscribe(_ => {
+                ActionEnemy();
+                prev_y = transform.position.y;
+            }
+        );
+
+        yield return new WaitForSeconds(UnityEngine.Random.value * 2);
+        OnAppear();
     }
 
     protected virtual void OnAppear() { }
@@ -148,11 +165,11 @@ public abstract class Enemy : Character
 
     IEnumerator Disappear()
     {
+        if (state != State.ALIVE) Debug.Log(state);
         Debug.Assert(state == State.ALIVE);
         state = State.DISAPPEAR;
         coll.enabled = false;
-        isFreeze = false;
-
+        
         GameObject.Find("GameManager").GetComponent<GameManager>().AddScore(100);
         
         var sec = 1.5f;
@@ -210,7 +227,7 @@ public abstract class Enemy : Character
 
 
     // Update is called once per frame
-    new void FixedUpdate ()
+    /*new void FixedUpdate ()
     {
         base.FixedUpdate();
 
@@ -220,11 +237,11 @@ public abstract class Enemy : Character
                 Init();
                 break;
             case State.READY:
-                StartCoroutine("Appear");
+                //StartCoroutine(Appear());
                 break;
             case State.ALIVE:
-                Action();
+                //Action();
                 break;
         }
-	}
+	}*/
 }

@@ -5,6 +5,7 @@ using UniRx;
 using UniRx.Triggers;
 using System.Collections;
 using System;
+using System.Linq;
 
 
 public class GameManager : MonoBehaviour {
@@ -16,6 +17,11 @@ public class GameManager : MonoBehaviour {
 
     public int startStage = 1;
     public int maxStage = 1;
+
+    public float[] buff = { 1f, 1f, 1f };
+
+    [SerializeField]
+    private Text[] buffText;
 
     [SerializeField]
     private GameObject wavePrefab;
@@ -36,6 +42,8 @@ public class GameManager : MonoBehaviour {
     
     Wave wave = null;
     bool isClear = false;
+
+    Coroutine[] coro = { null, null, null };
 
     [SerializeField]
     float timeLimit;
@@ -86,6 +94,26 @@ public class GameManager : MonoBehaviour {
     {
         this.FadeOut(500, ()=> {
             SceneManager.LoadScene("Title");
+        });
+    }
+
+    public void UpdateBuff()
+    {
+        buff.Select((b, i) => 
+            new Tuple<string, int>(string.Format("x{0:F2}", b), i)
+        ).ToList().ForEach(p => {
+            buffText[p.Item2].text = p.Item1;
+
+            if (coro[p.Item2] != null) StopCoroutine(coro[p.Item2]);
+            coro[p.Item2] = StartCoroutine(Util.FrameTimer(10000, (t) => {
+                buffText[p.Item2].color = new Color(1, t * 0.5f + 0.5f,  t, 0.75f);
+            }, () => {
+                buffText[p.Item2].color = new Color(1, 1, 1, 0.75f);
+                buff[p.Item2] = 1f;
+                buffText[p.Item2].text = string.Format("x{0:F2}", buff[p.Item2]);
+                coro[p.Item2] = null;
+            }));
+
         });
     }
 

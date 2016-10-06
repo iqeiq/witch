@@ -13,7 +13,7 @@ public abstract class Character : MonoBehaviour {
 
 
     // Use this for initialization
-    void Awake ()
+    void Start ()
     {
         render = GetComponent<SpriteRenderer>();
         size = render.bounds.size;

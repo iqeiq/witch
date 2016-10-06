@@ -989,7 +989,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   innerPercentage: 0.92
   fanAngle: 2.12
-  color: {r: 2.1617646, g: 1.2448782, b: 0.54044116, a: 1}
+  color: {r: 1.5388192, g: 0.7965653, b: 0.22629698, a: 1}
 --- !u!1 &652539296
 GameObject:
   m_ObjectHideFlags: 0
@@ -1686,7 +1686,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   innerPercentage: 0.85
   fanAngle: 0.49
-  color: {r: 2.1617646, g: 1.2448782, b: 0.54044116, a: 1}
+  color: {r: 1.5388192, g: 0.7965653, b: 0.22629698, a: 1}
 --- !u!1 &1583436515
 GameObject:
   m_ObjectHideFlags: 0
@@ -1729,7 +1729,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   innerPercentage: 0.93
   fanAngle: 3.04
-  color: {r: 2.1617646, g: 1.2448782, b: 0.54044116, a: 1}
+  color: {r: 1.5388192, g: 0.7965653, b: 0.22629698, a: 1}
 --- !u!1 &1611552731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2285,7 +2285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   innerPercentage: 0.97
   fanAngle: 4.19
-  color: {r: 2.1617646, g: 1.2448782, b: 0.54044116, a: 1}
+  color: {r: 1.5388192, g: 0.7965653, b: 0.22629698, a: 1}
 --- !u!1 &2110481153
 GameObject:
   m_ObjectHideFlags: 0

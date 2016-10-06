@@ -17,8 +17,8 @@ PlayerSettings:
   m_SplashScreenStyle: 0
   m_ShowUnitySplashScreen: 1
   m_VirtualRealitySplashScreen: {fileID: 0}
-  defaultScreenWidth: 960
-  defaultScreenHeight: 540
+  defaultScreenWidth: 1024
+  defaultScreenHeight: 576
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 540
   m_RenderingPath: 1
@@ -30,7 +30,7 @@ PlayerSettings:
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: -1
   iosAppInBackgroundBehavior: 0
-  displayResolutionDialog: 1
+  displayResolutionDialog: 0
   iosAllowHTTPDownload: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 1
@@ -174,12 +174,13 @@ PlayerSettings:
     height: 180
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
-  resolutionDialogBanner: {fileID: 0}
+  resolutionDialogBanner: {fileID: 2800000, guid: 0f7d838b39379e2478b89c2585908a11,
+    type: 3}
   m_BuildTargetIcons:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 2b797c44477c4b244a8e492c7bfcf0a1, type: 3}
+      m_Icon: {fileID: 0}
       m_Width: 128
       m_Height: 128
   m_BuildTargetBatching: []

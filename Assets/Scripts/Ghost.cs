@@ -67,6 +67,14 @@ public class Ghost : Enemy
 
     IEnumerator ToggleDisappear()
     {
+        var c = render.color;
+        yield return StartCoroutine(Util.FrameTimer(1000f, (t) =>
+        {
+            render.color = new Color(c.r, c.g, c.b, (2f - t) * 0.25f + 0.5f); // 1 -> 0.75
+        }, () => {
+            render.color = new Color(c.r, c.g, c.b, 0.75f);
+        }));
+
         while (true)
         {
             if (isFreeze)

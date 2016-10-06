@@ -17,14 +17,22 @@ public class MagicTurret : MonoBehaviour
     [SerializeField]
     private int count = 5;
 
+    public float damage = 1f;
+    public Magic.Arche arche = Magic.Arche.AQUA;
+    public Magic.Type type = Magic.Type.NORMAL;
+    public int[] buffidxs = { };
 
-    void Shot()
+
+    void Shot(GameManager gm)
     {
         var pos = transform.position;
-        var sp = 5f;
-        var dmg = 1f;
-        Magic.Arche ar = Magic.Arche.AQUA;
-        Magic.Type ty = Magic.Type.NORMAL;
+        var sp = 2f;
+        var dmg = damage;
+        Magic.Arche ar = arche;
+        Magic.Type ty = type;
+
+        var dr = buffidxs.Average(i => gm.buff[i]); // TODO;
+        dmg *= dr;
 
         var m = Util.CreateAndGetComponent<Magic>(magicPrefab, pos);
         m.Set(ar, ty, sp, dmg);
@@ -50,11 +58,13 @@ public class MagicTurret : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        var gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         Observable
             .Interval(TimeSpan.FromSeconds(interval))
             .Take(count)
             .Subscribe(x => {
-                Shot();
+                Shot(gm);
             }, () => {
                 Disappear();
             });

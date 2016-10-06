@@ -38,7 +38,10 @@ public class EnemyPackage : MonoBehaviour
         damagebar.ring.enabled = false;
         damageStart = enemy.GetMaxHP();
         damageEnd = enemy.GetMaxHP();
+    }
 
+    void Start()
+    {
         var hpChange = this.ToObservable(() => enemy.hp)
             .DistinctUntilChanged()
             .Pairwise()

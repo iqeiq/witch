@@ -73,8 +73,8 @@ public class Magic : MonoBehaviour {
 
             StartCoroutine(Util.FrameTimer(500, (t) => {
                 damage = d * 0.5f * (2 - t);
-                coll.radius = radius + 2 * t;
-                var blr = radius + 2 * t;
+                coll.radius = radius + 2.5f * t;
+                var blr = coll.radius;
                 bl.transform.localScale = new Vector3(blr, blr, blr);
                 bl.color.a = 1 - t;
             }, ()=> {
