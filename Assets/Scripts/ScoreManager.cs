@@ -17,7 +17,11 @@ public class ScoreManager : MonoBehaviour
 
     string GetRank(int score)
     {
-        if (score > 9300)
+        if (score > 10700)
+        {
+            return "SS";
+        }
+        if (score > 8500)
         {
             return "S";
         }

@@ -33,6 +33,7 @@ public class EnemyPackage : MonoBehaviour
         Debug.Assert(enemy != null);
         Debug.Assert(healthbar != null);
         Debug.Assert(damagebar != null);
+        healthbar.enabled = false;
 
         damagebar.ring.fanAngle = 0f;
         damagebar.ring.enabled = false;
@@ -42,6 +43,7 @@ public class EnemyPackage : MonoBehaviour
 
     void Start()
     {
+        healthbar.enabled = true;
         var hpChange = this.ToObservable(() => enemy.hp)
             .DistinctUntilChanged()
             .Pairwise()
