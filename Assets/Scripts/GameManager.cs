@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UniRx;
 using UniRx.Triggers;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using System.Linq;
 
@@ -118,22 +119,64 @@ public class GameManager : MonoBehaviour {
         });
     }
 
+    IEnumerator TutorialText(Text text, string mes, Func<bool> trigger)
+    {
+        text.text = mes;
+        text.enabled = true;
+        yield return this.UpdateAsObservable().Where(_ => trigger()).Take(1).StartAsCoroutine();
+        text.enabled = false;
+        yield return new WaitForSeconds(0.5f);
+    }
+
     IEnumerator Tutorial()
     {
         var ttext = GameObject.Find("TutorialText").GetComponent<Text>();
+        var tcur = GameObject.Find("TutorialCursor").GetComponentInChildren<Text>();
+        tcur.enabled = false;
+        var player = GameObject.Find("player").GetComponent<Player>();
+
+        var filename = "tutorial";
+        var textAsset = Resources.Load(filename) as TextAsset;
+        Debug.AssertFormat(textAsset != null, "{0} is not found.", filename);
+        JsonNode json = JsonNode.Parse(textAsset.text);
+
+        var messages = json["message"].Select(e => new Tuple<string, string, string>(
+            e["text"].Get<string>(),
+            e["triggerType"].Get<string>(),
+            e["trigger"].Get<string>()
+        ));
 
         waveText.text = "TUTORIAL";
         waveText.enabled = true;
-
         yield return new WaitForSeconds(2f);
-
         waveText.enabled = false;
 
-        ttext.text = "pao-n"; 
+        GameObject.Find("TutorialCursor").GetComponent<Image>().enabled = true;
 
+        foreach (var mes in messages)
+        {
+            player.lastRunes = "";
+            var key = mes.Item3;
+            var type = mes.Item2;
+            Func<bool> trigger = () => true;
+            if (type == "button")
+            {
+                tcur.enabled = true;
+                trigger = () => Input.GetButtonDown(key);
+            }
+            else if (type == "player") trigger = () => {
+                var triggerMap = "ABC".ToCharArray().ToDictionary(c => c, _ => 0);
+                key.ToCharArray().ToList().ForEach(c => triggerMap[c]++);
+                player.lastRunes.ToCharArray().ToList().ForEach(c => triggerMap[c]--);
+                return triggerMap.All(c => c.Value == 0);
+            };    
+            yield return StartCoroutine(TutorialText(ttext, mes.Item1, trigger));
+            tcur.enabled = false;
+        }
 
+        GameObject.Find("TutorialCursor").GetComponent<Image>().enabled = false;
 
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(1f);
     }
 
     IEnumerator Updater()

@@ -20,6 +20,8 @@ public class Player : Character {
 
     Dictionary<MagicRune, EmitRing> rings;
 
+    public string lastRunes = "";
+
     override protected void Init()
     {
         SetPosition(0.25f, 0.5f);
@@ -64,6 +66,7 @@ public class Player : Character {
         ).Where(
             x => x.Count > 0
         ).Subscribe(x => {
+            lastRunes = x.Select(r => dic[r][0]).Aggregate("", (a, b) => a + b);
             //Debug.Log(x.Count);
             //Debug.Log("" + string.Join(", ", x.Select(n => dic[n]).ToArray()));
             SetMagic(x.ToArray(), gm);
