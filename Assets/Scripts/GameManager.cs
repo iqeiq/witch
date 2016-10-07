@@ -46,12 +46,13 @@ public class GameManager : MonoBehaviour {
     Coroutine[] coro = { null, null, null };
 
     [SerializeField]
+    float timeLimit_;
     float timeLimit;
-    
-	// Use this for initialization
+
+    // Use this for initialization
     void Start () {
         score = 0;
-        timeLimit = 120f;
+        timeLimit = timeLimit_;
         waveText = waveTextRef.GetComponent<Text>();
         waveText.enabled = false;
         CountdownText.enabled = false;
@@ -117,22 +118,49 @@ public class GameManager : MonoBehaviour {
         });
     }
 
+    IEnumerator Tutorial()
+    {
+        var ttext = GameObject.Find("TutorialText").GetComponent<Text>();
+
+        waveText.text = "TUTORIAL";
+        waveText.enabled = true;
+
+        yield return new WaitForSeconds(2f);
+
+        waveText.enabled = false;
+
+        ttext.text = "pao-n"; 
+
+
+
+        yield return new WaitForSeconds(10f);
+    }
+
     IEnumerator Updater()
     {
         isClear = false;
         for(var stage = startStage; stage <= maxStage; ++stage)
         {
             var g = Instantiate(wavePrefab) as GameObject;
-            wave = g.GetComponent<Wave>();
-            wave.Load(stage);
-
-            // TODO:  display 「WAVE 1」
-            waveText.text = "WAVE " + stage;
-            waveText.enabled = true;
             
-            yield return new WaitForSeconds(0.7f);
+            if (stage > 0)
+            {
+                wave = g.GetComponent<Wave>();
+                wave.Load(stage);
+                
+                waveText.text = "WAVE " + stage;
+                waveText.enabled = true;
 
-            waveText.enabled = false;
+                yield return new WaitForSeconds(0.7f);
+
+                waveText.enabled = false;
+            }
+            else
+            {
+                yield return StartCoroutine(Tutorial());
+                wave = g.GetComponent<Wave>();
+                wave.Load(stage);
+            }
 
             while (!wave.isFinish() && !isClear)
             {
@@ -172,7 +200,7 @@ public class GameManager : MonoBehaviour {
                 timeLimit = 0f;
                 isClear = true;            
             }
-            timeText.text = string.Format("{0:D2}", (int)Mathf.Ceil(timeLimit));
+            timeText.text = string.Format("{0:D3}", (int)Mathf.Ceil(timeLimit));
             yield return new WaitForSeconds(0.3f);
         }
         

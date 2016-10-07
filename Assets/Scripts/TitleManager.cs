@@ -14,6 +14,9 @@ public class TitleManager : MonoBehaviour
     private Button start;
 
     [SerializeField]
+    private Button tutorial;
+
+    [SerializeField]
     private Button end;
 
     // Use this for initialization
@@ -26,6 +29,12 @@ public class TitleManager : MonoBehaviour
         start.onClick.AsObservable().Take(1).Subscribe(_ => {
             this.FadeOut(500, () => {
                 SceneManager.LoadScene("Main");
+            });
+        });
+
+        tutorial.onClick.AsObservable().Take(1).Subscribe(_ => {
+            this.FadeOut(500, () => {
+                SceneManager.LoadScene("Tutorial");
             });
         });
 
