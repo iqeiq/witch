@@ -1,0 +1,58 @@
+{
+    "message": [
+        {
+            "text": "このゲームは、\n魔法で敵を倒していくゲームです",
+            "triggerType": "button",
+            "trigger": "Submit"
+        },
+        {
+            "text": "魔法を使うには、\n3種類のキーを連続して入力します",
+            "triggerType": "button",
+            "trigger": "Submit"
+        },
+        {
+            "text": "ZZ で　炎 \n(範囲攻撃)",
+            "triggerType": "player",
+            "trigger": "AA"
+        },
+        {
+            "text": "XX で　風 \n(速い攻撃)",
+            "triggerType": "player",
+            "trigger": "BB"
+        },
+        {
+            "text": "CC で　水 \n(タレット)",
+            "triggerType": "player",
+            "trigger": "CC"
+        },
+        {
+            "text": "ZX で　光 \n(貫通)",
+            "triggerType": "player",
+            "trigger": "AB"
+        },{
+            "text": "ZC で　闇 \n(タレット, 割合ダメージ)",
+            "triggerType": "player",
+            "trigger": "AC"
+        },
+        {
+            "text": "XC で　氷 \n(凍らせる)",
+            "triggerType": "player",
+            "trigger": "BC"
+        },
+        {
+            "text": "ZXC で 一定時間のダメージ上昇",
+            "triggerType": "player",
+            "trigger": "ABC"
+        },
+        {
+            "text": "これらを使い分けて、\n効率よく敵を倒していこう",
+            "triggerType": "button",
+            "trigger": "Submit"
+        },
+        {
+            "text": "敵は3種類、実際に倒してみよう",
+            "triggerType": "button",
+            "trigger": "Submit"
+        }
+    ]
+}
