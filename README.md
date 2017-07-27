@@ -9,3 +9,5 @@ Unity製のゲームです。
     - Particle Systems
 
 
+WebGLビルド (シェーダー使ってる部分がうまく動いてません)
+https://iqeiq.github.io/witch/
